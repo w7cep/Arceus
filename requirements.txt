@@ -1,0 +1,15 @@
+nextcord==2.0.0a3
+nextcord-ext-menus==1.3.2
+python-dotenv==0.19.2
+better_profanity
+apscheduler
+requests
+PyNaCl==1.3.0
+typing-extensions==3.7.4.3
+dateutils
+psutil
+python-nmap
+asyncio
+aiohttp==3.7.4
+motor
+pymongo[srv]
