@@ -31,7 +31,13 @@ initial_extensions = [
     'cogs.ping',
     'cogs.help',
     'cogs.greetings',
-    'cogs.events'
+    'cogs.events',
+    'cogs.moderation',
+    'cogs.blacklist',
+    'cogs.channel',
+    'cogs.botconfig',
+    'cogs.profanity',
+    'cogs.rtfm',
     ]
 
 async def get_prefix(bot, message):
@@ -177,7 +183,7 @@ def main():
 
     for extension in initial_extensions:
         bot.load_extension(extension)
-
+        print(f"loaded {extension}")
     async def startup():
         bot.session = aiohttp.ClientSession()
 

@@ -29,7 +29,6 @@ class Interactions(commands.Cog, name="Interactions"):
         self.__bot.add_view(ColorRoleView())
         # set flag
         self.__bot.persistent_views_added = True
-        print("Button views added")
 
     @commands.group(invoke_without_command=True)
     @commands.guild_only()

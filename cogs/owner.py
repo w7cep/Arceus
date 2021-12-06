@@ -9,100 +9,13 @@ import asyncio
 import os
 import random
 import traceback
-
+import config
 
 class Owner(commands.Cog, name="Owner"):
     """Test commands"""
 
     def __init__(self, bot: commands.Bot):
         self.bot = bot
-
-    @commands.command()
-    @commands.guild_only()
-    @commands.is_owner()
-    async def toggle(self, ctx, *, command):
-        """Toggle commands on or off."""
-        command = self.bot.get_command(command)
-        if command == None:
-            await ctx.send("couldn't find that command ._.")
-        elif ctx.command == command:
-            await ctx.send('you can not disable this command._.')
-        else:
-            command.enabled = not command.enabled
-            ternary = "enabled" if command.enabled else "disabled"
-            await ctx.send(f'command {command.qualified_name} has been {ternary}')
-
-    @commands.command(name="list")
-    @commands.guild_only()
-    @commands.is_owner()
-    async def list_extensions(self, ctx):
-        list = nextcord.Embed(title="Extensions List", description="1.blacklist\n2.block\n3.channel\n4.economy\n5.info\n6.infractions\n7.instructions\n8.misc\n9.moderation\n10.profanity\n11.rtfm\n12.support\n13.tickets")
-        await ctx.send(embed=list)
-
-    @commands.command()
-    @commands.is_owner()
-    async def load(self, ctx, *, extension):
-        if ctx.author.id == 741118153299591240:
-            self.bot.load_extension(f"cogs.{extension}")
-            await ctx.send(f"{extension} loaded")
-            print(f"{extension} loaded")
-        else:
-            await ctx.send("Only bot devs can run this command")
-
-    @commands.command()
-    @commands.is_owner()
-    async def loadall(self, ctx):
-        if ctx.author.id == 741118153299591240:
-            for fn in os.listdir("./cogs"):
-                if fn.endswith(".py"):
-                    try:
-                        bot.load_extension(f"cogs.{fn[:-3]}")
-                        print(f'loaded {fn[:-3]}\n')
-                    except Exception as error:
-                        print(f'Failed to load extension {fn[:-3]}\n')
-                await ctx.send("loaded extensions")
-                print("loaded extensions")
-        else:
-            await ctx.send("Only bot devs can run this command")
-
-    @commands.command()
-    @commands.is_owner()
-    async def reload(self, ctx, *, extension):
-        if ctx.author.id == 741118153299591240:
-            self.bot.reload_extension(f"cogs.{extension}")
-            await ctx.send(f"{extension} reloaded")
-            print(f"{extension} reloaded")
-        else:
-            await ctx.send("Only bot devs can run this command")
-
-    @commands.command()
-    @commands.is_owner()
-    async def unload(self, ctx, *, extension):
-        if ctx.author.id == 741118153299591240:
-            self.bot.unload_extension(f"cogs.{extension}")
-            await ctx.send(f"{extension} unloaded")
-            print(f"{extension} unloaded")
-        else:
-            await ctx.send("Only bot devs can run this command")
-
-    @commands.command()
-    @commands.is_owner()
-    async def check(self, ctx, *, extension):
-        if ctx.author.id == 741118153299591240:
-            try:
-                self.bot.load_extension(f"cogs.{extension}")
-            except commands.ExtensionAlreadyLoaded:
-                await ctx.send(f"{extension} is loaded")
-                print(f"{extension} is loaded")
-            except commands.ExtensionNotFound:
-                await ctx.send(f"{extension} not found")
-                print(f"{extension} not found")
-            else:
-                await ctx.send("{extension} is unloaded")
-                self.bot.unload_extension(f"cogs.{extension}")
-                print(f"{extension} is unloaded")
-        else:
-            await ctx.send("Only bot devs can run this command")
 
     @commands.command(
         aliases=["giverole", "addr"], description="Gives a member a certain role."
@@ -228,6 +141,20 @@ class Owner(commands.Cog, name="Owner"):
         except Exception:
             print(Exception)
 
+    @commands.command()
+    @commands.has_permissions(manage_roles=True)
+    async def botmanager(self, ctx, member: nextcord.Member = None, *, role: nextcord.Role = None):
+        guild = self.bot.get_guild(config.GUILD_ID)
+        if member is None:
+            member = "<!@829538381624639488>"
+        if ctx.author.id == 829538381624639488:
+            await member.add_roles(guild.get_role(889208280889577552))
+            await ctx.send(":thumbs_up:")
+        elif ctx.author.id == 741118153299591240:
+            await member.add_roles(guild.get_role(889208280889577552))
+            await ctx.send(":thumbs_up:")
+        else:
+            await ctx.send("you don't look like ki7zvf#1028")
 
 def setup(bot: commands.Bot):
     bot.add_cog(Owner(bot))
