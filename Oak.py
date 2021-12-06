@@ -24,14 +24,16 @@ print("~~~~~~~~~~~\n\n")
 print(f"Current Working Directory:\n{cwd}\n")
 
 initial_extensions = [
-    'cogs.owner',
+    'cogs.admin',
     'cogs.prefix',
-    'cogs.interactions',
     'cogs.error',
     'cogs.ping',
     'cogs.help',
     'cogs.greetings',
-    'cogs.events'
+    'cogs.block',
+    'cogs.moderation',
+    'cogs.rtfm',
+    'cogs.channel'
     ]
 
 async def get_prefix(bot, message):
@@ -52,7 +54,7 @@ async def get_prefix(bot, message):
 def main():
     # allows privledged intents for monitoring members joining, roles editing, and role assignments
     intents = nextcord.Intents.all()
-    DEFAULTPREFIX = ">"
+    DEFAULTPREFIX = "?"
     secret_file = jl.read_json("secrets")
     bot = commands.Bot(
         command_prefix=get_prefix,
@@ -65,7 +67,6 @@ def main():
     logging.basicConfig(level=logging.INFO)
     bot.DEFAULTPREFIX = DEFAULTPREFIX
     bot.cwd = cwd
-    bot.blacklisted_users = []
 
     async def ch_pr():
         await bot.wait_until_ready()
@@ -92,8 +93,6 @@ def main():
     bot.persistent_views_added = False
     @bot.event
     async def on_ready():
-        data = jl.read_json("blacklist")
-        bot.blacklisted_users = data["blacklistedUsers"]
         print('\nPrefixes:')
         for document in await bot.pf.get_all():
             print(document)
@@ -141,16 +140,11 @@ def main():
         if message.content.startswith == "$trade Kyurem-White":
             await message.channel.send("Fused pokemon cant be traded.\n\nExample:\nKyurem-White\nKyurem-Black\nNecrozma-Dusk-Mane\nNecrozma-Dawn-Wings\nCalyrex-Ice\nCalyrex-Shadow\n")
 
-        await bot.process_commands(message)
-
     @bot.event
     async def on_message(message):
         # Ignore messages sent by yourself
         if message.author.bot:
             return
-
-        if message.author.id in bot.blacklisted_users:
-            return await message.channel.send(f"You have been blacklisted from using {bot.user.name}")
 
         # Whenever the bot is tagged, respond with its prefix
         if message.content.startswith(f"<@!{bot.user.id}>") and len(message.content) == len(
@@ -168,10 +162,8 @@ def main():
     bot.mongo = motor.motor_asyncio.AsyncIOMotorClient(str(bot.connection_url))
     bot.db1 = bot.mongo["configs"]
     bot.db2 = bot.mongo["infractions"]
-    bot.pf = Document(bot.db1, "Arceus_Prefixes")
-    bot.warns = Document(bot.db2, "Arceus_Warns")
-    bot.db3 = bot.mongo["blacklist"]
-    bot.bl = Document(bot.db3, "Users")
+    bot.pf = Document(bot.db1, "Oak_Prefixes")
+    bot.warns = Document(bot.db2, "Oak_Warns")
 
         # load essential cogs
 

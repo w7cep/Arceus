@@ -166,6 +166,6 @@ class Events(commands.Cog, name="Events"):
                 embed.add_field(name=name, value=value, inline=inline)
 
             await log_channel.send(embed=embed)
-        
+
 def setup(bot: commands.Bot):
     bot.add_cog(Events(bot))

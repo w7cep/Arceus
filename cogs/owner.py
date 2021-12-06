@@ -32,6 +32,13 @@ class Owner(commands.Cog, name="Owner"):
             ternary = "enabled" if command.enabled else "disabled"
             await ctx.send(f'command {command.qualified_name} has been {ternary}')
 
+    @commands.command(name="list")
+    @commands.guild_only()
+    @commands.is_owner()
+    async def list_extensions(self, ctx):
+        list = nextcord.Embed(title="Extensions List", description="1.blacklist\n2.block\n3.channel\n4.economy\n5.info\n6.infractions\n7.instructions\n8.misc\n9.moderation\n10.profanity\n11.rtfm\n12.support\n13.tickets")
+        await ctx.send(embed=list)
+
     @commands.command()
     @commands.is_owner()
     async def load(self, ctx, *, extension):
@@ -96,6 +103,131 @@ class Owner(commands.Cog, name="Owner"):
                 print(f"{extension} is unloaded")
         else:
             await ctx.send("Only bot devs can run this command")
+
+    @commands.command(
+        aliases=["giverole", "addr"], description="Gives a member a certain role."
+    )
+    @commands.has_permissions(manage_roles=True)
+    async def addrole(
+        self, ctx, member: nextcord.Member = None, *, role: nextcord.Role = None
+    ):
+        if member is None:
+            embed = nextcord.Embed(
+                title="Add Role Error",
+                description="Please ping a user to give them a role!",
+            )
+            await ctx.send(embed=embed)
+            return
+        if role is None:
+            embed = nextcord.Embed(
+                title="Add Role Error",
+                description="Please ping a role to give {} that role!".format(
+                    member.mention
+                ),
+            )
+            await ctx.send(embed=embed)
+            return
+        if ctx.author.top_role.position < role.position:
+            em = nextcord.Embed(
+                title="Add Role Error",
+                description="You do not have enough permissions to give this role",
+            )
+            return await ctx.send(embed=em)
+        if ctx.guild.me.top_role.position < role.position:
+            embed = nextcord.Embed(
+                title="Add Role Error",
+                description="That role is too high for me to perform this action",
+            )
+            return await ctx.send(embed=embed)
+        try:
+            addRole = True
+            for role_ in member.roles:
+                if role_ == role:
+                    addRole = False
+                    break
+            if not addRole:
+                embed = nextcord.Embed(
+                    title="Add Role Error",
+                    description=f"{member.mention} already has the role you are trying to give",
+                )
+                await ctx.send(embed=embed)
+                return
+            else:
+                em = nextcord.Embed(
+                    title="Add Role Success",
+                    description=f"{role.mention} has been assigned to {member.mention}",
+                )
+                await ctx.send(embed=em)
+                await member.add_roles(role)
+                return
+        except Exception:
+            print(Exception)
+
+    @commands.command(
+        aliases=["takerole", "remover"],
+        description="Removes a certain role from a member.",
+    )
+    @commands.has_permissions(manage_roles=True)
+    async def removerole(
+        self,
+        ctx,
+        member: nextcord.Member = None,
+        role: nextcord.Role = None,
+        *,
+        reason=None,
+    ):
+        if member is None:
+            embed = nextcord.Embed(
+                title="Remove Role Error",
+                description="Please ping a user to remove a role from them!",
+            )
+            await ctx.send(embed=embed)
+            return
+        if role is None:
+            embed = nextcord.Embed(
+                title="Remove Role Error",
+                description="Please ping a role to remove the role from {}!".format(
+                    member.mention
+                ),
+            )
+            await ctx.send(embed=embed)
+            return
+        if ctx.author.top_role.position < role.position:
+            em = nextcord.Embed(
+                title="Remove Role Error",
+                description="You do not have enough permissions to remove this role",
+            )
+            return await ctx.send(embed=em)
+        if ctx.guild.me.top_role.position < role.position:
+            embed = nextcord.Embed(
+                title="Remove Role Error",
+                description="That role is too high for me to perform this action",
+            )
+            return await ctx.send(embed=embed)
+        try:
+            roleRemoved = False
+            for role_ in member.roles:
+                if role_ == role:
+                    await member.remove_roles(role)
+                    roleRemoved = True
+                    break
+            if not roleRemoved:
+                embed = nextcord.Embed(
+                    title="Remove Role Error",
+                    description=f"{member.mention} already has the role you are trying to give",
+                )
+                await ctx.send(embed=embed)
+                return
+            else:
+                em = nextcord.Embed(
+                    title="Remove Role Success!",
+                    description=f"{role.mention} has been removed from {member.mention}",
+                )
+                await ctx.send(embed=em)
+                return
+        except Exception:
+            print(Exception)
+
 
 def setup(bot: commands.Bot):
     bot.add_cog(Owner(bot))

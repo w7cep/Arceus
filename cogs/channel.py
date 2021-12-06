@@ -1,6 +1,27 @@
 import nextcord
 from nextcord.ext import commands
+import asyncio
 
+class LockConfirm(nextcord.ui.View):
+    def __init__(self):
+        super().__init__()
+        self.value = None
+
+    @nextcord.ui.button(
+        label="Confirm", style=nextcord.ButtonStyle.green, custom_id="yes"
+    )
+    async def confirm(
+        self, button: nextcord.ui.Button, interaction: nextcord.Interaction
+    ):
+        self.value = True
+        self.stop()
+
+    @nextcord.ui.button(label="Cancel", style=nextcord.ButtonStyle.red, custom_id="no")
+    async def cancel(
+        self, button: nextcord.ui.Button, interaction: nextcord.Interaction
+    ):
+        self.value = False
+        self.stop()
 
 class Channel(commands.Cog, name="Channel"):
     """Channel Commands"""
@@ -173,6 +194,123 @@ class Channel(commands.Cog, name="Channel"):
         await channel.delete(reason=reason)
         await ctx.channel.trigger_typing()
         await ctx.send(f"Hey man! I deleted {channel.name} for ya!")
+
+    @commands.command(description="Clears a bundle of messages.")
+    @commands.has_permissions(manage_messages=True)
+    async def clear(self, ctx, amount=10):
+        amount = amount + 1
+        if amount > 101:
+            em1 = nextcord.Embed(
+                title="Clear Error",
+                description="Purge limit exedeed - Greater than 100",
+            )
+            return await ctx.send(embed=em1)
+        else:
+            await ctx.channel.purge(limit=amount)
+            msg = await ctx.send("Cleared Messages")
+            await asyncio.sleep(10)
+            await msg.delete()
+
+    @commands.command(description="Change the channels slowmode.")
+    @commands.has_permissions(manage_channels=True)
+    async def slowmode(self, ctx, time: int):
+        try:
+            if time == 0:
+                em1 = nextcord.Embed(
+                    title="Slowmode Success", description="Slowmode turned off"
+                )
+                await ctx.send(embed=em1)
+                await ctx.channel.edit(slowmode_delay=0)
+            elif time > 21600:
+                em2 = nextcord.Embed(
+                    title="Slowmode Error", description="Slowmode over 6 hours"
+                )
+                await ctx.send(embed=em2)
+            else:
+                await ctx.channel.edit(slowmode_delay=time)
+                em3 = nextcord.Embed(
+                    title="Slowmode Success",
+                    description=f"Slowmode set to {time} seconds",
+                )
+                await ctx.send(embed=em3)
+        except Exception:
+            await ctx.send("Error has occoured, notifying dev team")
+            print(Exception)
+
+    @commands.command(description="Locks the channel.")
+    @commands.has_permissions(kick_members=True)
+    async def lock(self, ctx, channel: nextcord.TextChannel = None, setting = None):
+        if setting == '--server':
+            view = LockConfirm()
+            em = nextcord.Embed(
+                title="Are you sure?",
+                description="This is a very risky command only to be used in important situations such as, `Raid on the Server`. **If this command is used for the wrong purpose you may risk getting demoted if not banned from the staff team.**",
+            )
+            await ctx.author.send(embed = em, view=view)
+            await view.wait()
+            if view.value is None:
+                await ctx.author.send("Command has been Timed Out, please try again.")
+            elif view.value:
+                for channel in ctx.guild.channels:
+                    await channel.set_permissions(
+                        ctx.guild.default_role,
+                        reason=f"{ctx.author.name} locked {channel.name} using --server override",
+                        send_messages=False, read_messages=None, view_channel=False,
+                    )
+                embed = nextcord.Embed(
+                title="Lockdown Success",
+                description=f"Locked entire server <:saluteboi:897263732948885574>",
+                )
+                await ctx.send(embed=embed)
+            else:
+                lockEmbed = nextcord.Embed(
+                    title="Lock Cancelled",
+                    description="Lets pretend like this never happened them :I",
+                )
+                await ctx.author.send(embed=lockEmbed)
+            return
+        if channel is None:
+            channel = ctx.message.channel
+        await channel.set_permissions(
+            ctx.guild.default_role,
+            reason=f"{ctx.author.name} locked {channel.name}",
+            send_messages=False, read_messages=None, view_channel=False, #
+        )
+        embed = nextcord.Embed(
+            title="Lockdown Success",
+            description=f"Locked {channel.mention}",
+        )
+        await ctx.send(embed=embed)
+
+    @commands.command(description="Unlocks the channel.")
+    @commands.has_permissions(kick_members=True)
+    async def unlock(self, ctx, channel: nextcord.TextChannel = None, setting=None):
+        if setting == '--server':
+            for channel in ctx.guild.channels:
+                await channel.set_permissions(
+                    ctx.guild.default_role,
+                    reason=f"{ctx.author.name} unlocked {channel.name} using --server override",
+                    send_messages=None, view_channel=False, read_messages=None,
+                )
+            embed = nextcord.Embed(
+            title="Unlock Success",
+            description=f"Unlocked entire server (you might have to manualy relock servers that shouldnt have been unlocked)",
+            )
+            await ctx.send(embed=embed)
+            return
+        if channel is None:
+            channel = ctx.channel
+        await channel.set_permissions(
+            ctx.guild.default_role,
+            reason=f"{ctx.author.name} unlocked {channel.name}",
+            send_messages=None, read_messages=None, view_channel=False,
+        )
+        embed = nextcord.Embed(
+            title="Unlock Success",
+            description=f"Unlocked {channel.mention}",
+        )
+        await ctx.send(embed=embed)
+
 
 def setup(bot: commands.Bot):
     bot.add_cog(Channel(bot))

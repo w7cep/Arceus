@@ -2,7 +2,7 @@ from typing import Optional
 from .quiet_warning import QuietWarning
 from .error_logger import ErrorLogger
 from .friendly_error import FriendlyError
-import nextcord.ext.commands.errors as discord_err
+import nextcord.ext.commands.errors as nextcord_err
 import nextcord
 
 
@@ -23,7 +23,7 @@ class ErrorHandler:
 		elif isinstance(error, QuietWarning):
 			self.__handle_quiet_warning(error)
 
-		elif isinstance(error, discord_err.CommandInvokeError):
+		elif isinstance(error, nextcord_err.CommandInvokeError):
 			await self.handle(error.original, message)
 
 		else:
@@ -49,15 +49,15 @@ class ErrorHandler:
 
 	def __user_error_message(self, error: BaseException):
 		"""Given an error, will return a user-friendly string, and whether or not to log the error in the channel"""
-		if isinstance(error, discord_err.MissingPermissions):
+		if isinstance(error, nextcord_err.MissingPermissions):
 			return (
 				"You are missing the following permissions required to run the"
 				f' command: {", ".join(str(perm) for perm in error.missing_perms)}.',
 				False,
 			)
-		elif isinstance(error, discord_err.MissingRole):
+		elif isinstance(error, nextcord_err.MissingRole):
 			return f"You do not have the required role to run this command.", False
-		elif isinstance(error, discord_err.CommandInvokeError):
+		elif isinstance(error, nextcord_err.CommandInvokeError):
 			return f"Error while executing the command.", True
 		else:
 			return f"An unknown error occurred.", True

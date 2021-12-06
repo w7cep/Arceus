@@ -381,7 +381,7 @@ import re
 import zlib
 from typing import Dict
 
-import nextcord as discord
+import nextcord as nextcord
 from nextcord.ext import commands
 from utils import fuzzy
 
@@ -486,7 +486,7 @@ class Rtfm(commands.Cog):
         page_types = {
             "python": "https://docs.python.org/3",
             "nextcord": "https://nextcord.readthedocs.io/en/latest",
-            "dpy": "https://discordpy.readthedocs.io/en/latest",
+            "dpy": "https://nextcordpy.readthedocs.io/en/latest",
             "dpy2": "https://discordpy.readthedocs.io/en/master",
             "pycord": "https://pycord.readthedocs.io/en/latest",
             "edpy": "https://enhanced-dpy.readthedocs.io/en/latest",
@@ -562,7 +562,7 @@ class Rtfm(commands.Cog):
     @commands.is_owner()
     async def rtfmcache(self, ctx: commands.Context):
         del self._rtfm_cache
-        embed = discord.Embed(title="Purged rtfm cache.", color=discord.Color.blurple())
+        embed = nextcord.Embed(title="Purged rtfm cache.", color=nextcord.Color.blurple())
         await ctx.send(embed=embed)
 
 
