@@ -11,7 +11,7 @@ class Tickets(commands.Cog, name="Tickets"):
         self.bot = bot
 
     @commands.command(name="tickethelp")
-    async def tickethelp(ctx):
+    async def tickethelp(self, ctx):
         with open("data.json") as f:
             data = json.load(f)
 
@@ -26,8 +26,8 @@ class Tickets(commands.Cog, name="Tickets"):
 
         if ctx.author.guild_permissions.administrator or valid_user:
 
-            em = nextcord.Embed(title="Auroris Tickets Help", description="", color=0x00a8ff)
-            em.add_field(name="`.new <message>`", value="This creates a new ticket. Add any words after the command if you'd like to send a message when we initially create your ticket.")
+            em = nextcord.Embed(title="Arceus Tickets Help", description="", color=0x00a8ff)
+            em.add_field(name="`.ticket <message>`", value="This creates a new ticket. Add any words after the command if you'd like to send a message when we initially create your ticket.")
             em.add_field(name="`.close`", value="Use this to close a ticket. This command only works in ticket channels.")
             em.add_field(name="`.addaccess <role_id>`", value="This can be used to give a specific role access to all tickets. This command can only be run if you have an admin-level role for this bot.")
             em.add_field(name="`.delaccess <role_id>`", value="This can be used to remove a specific role's access to all tickets. This command can only be run if you have an admin-level role for this bot.")
@@ -35,23 +35,23 @@ class Tickets(commands.Cog, name="Tickets"):
             em.add_field(name="`.delpingedrole <role_id>`", value="This command removes a role from the list of roles that are pinged when a new ticket is created. This command can only be run if you have an admin-level role for this bot.")
             em.add_field(name="`.addadminrole <role_id>`", value="This command gives all users with a specific role access to the admin-level commands for the bot, such as `.addpingedrole` and `.addaccess`. This command can only be run by users who have administrator permissions for the entire server.")
             em.add_field(name="`.deladminrole <role_id>`", value="This command removes access for all users with the specified role to the admin-level commands for the bot, such as `.addpingedrole` and `.addaccess`. This command can only be run by users who have administrator permissions for the entire server.")
-            em.set_footer(text="Auroris Development")
+            em.set_footer(text="Arceus Development")
 
             await ctx.send(embed=em)
 
         else:
 
-            em = nextcord.Embed(title = "Auroris Tickets Help", description ="", color = 0x00a8ff)
-            em.add_field(name="`.new <message>`", value="This creates a new ticket. Add any words after the command if you'd like to send a message when we initially create your ticket.")
+            em = nextcord.Embed(title = "Arceus Tickets Help", description ="", color = 0x00a8ff)
+            em.add_field(name="`.ticket <message>`", value="This creates a new ticket. Add any words after the command if you'd like to send a message when we initially create your ticket.")
             em.add_field(name="`.close`", value="Use this to close a ticket. This command only works in ticket channels.")
-            em.set_footer(text="Auroris Development")
+            em.set_footer(text="Arceus Development")
 
             await ctx.send(embed=em)
 
     @commands.command()
-    async def new(ctx, *, args = None):
+    async def ticket(self, ctx, *, args = None):
 
-        await bot.wait_until_ready()
+        await self.bot.wait_until_ready()
 
         if args == None:
             message_content = "Please wait, we will be with you shortly!"
@@ -65,19 +65,20 @@ class Tickets(commands.Cog, name="Tickets"):
         ticket_number = int(data["ticket-counter"])
         ticket_number += 1
 
-        ticket_channel = await ctx.guild.create_text_channel("ticket-{}".format(ticket_number))
+        ticket_channel = await ctx.guild.create_text_channel(f"{ctx.author.name}-00{ticket_number}")
         await ticket_channel.set_permissions(ctx.guild.get_role(ctx.guild.id), send_messages=False, read_messages=False)
+        await ticket_channel.set_permissions(ctx.author, view_channel=True, send_messages=True, read_messages=True, add_reactions=True, embed_links=True, attach_files=True, read_message_history=True, external_emojis=True)
 
         for role_id in data["valid-roles"]:
             role = ctx.guild.get_role(role_id)
 
-        await ticket_channel.set_permissions(role, send_messages=True, read_messages=True, add_reactions=True, embed_links=True, attach_files=True, read_message_history=True, external_emojis=True)
+            await ticket_channel.set_permissions(ctx.author, view_channel=True, send_messages=True, read_messages=True, add_reactions=True, embed_links=True, attach_files=True, read_message_history=True, external_emojis=True)
 
-        await ticket_channel.set_permissions(ctx.author, send_messages=True, read_messages=True, add_reactions=True, embed_links=True, attach_files=True, read_message_history=True, external_emojis=True)
+            await ticket_channel.set_permissions(role, send_messages=True, read_messages=True, add_reactions=True, embed_links=True, attach_files=True, read_message_history=True, external_emojis=True)
 
-        em = nextcord.Embed(title="New ticket from {}#{}".format(ctx.author.name, ctx.author.discriminator), description= "{}".format(message_content), color=0x00a8ff)
+            em = nextcord.Embed(title="New ticket from {}#{}".format(ctx.author.name, ctx.author.discriminator), description= "{}".format(message_content), color=0x00a8ff)
 
-        await ticket_channel.send(embed=em)
+            await ticket_channel.send(embed=em)
 
         pinged_msg_content = ""
         non_mentionable_roles = []
@@ -107,12 +108,12 @@ class Tickets(commands.Cog, name="Tickets"):
         with open("data.json", 'w') as f:
             json.dump(data, f)
 
-        created_em = nextcord.Embed(title="Auroris Tickets", description="Your ticket has been created at {}".format(ticket_channel.mention), color=0x00a8ff)
+        created_em = nextcord.Embed(title="Arceus Tickets", description="Your ticket has been created at {}".format(ticket_channel.mention), color=0x00a8ff)
 
         await ctx.send(embed=created_em)
 
     @commands.command()
-    async def close(ctx):
+    async def close(self, ctx):
         with open('data.json') as f:
             data = json.load(f)
 
@@ -125,10 +126,10 @@ class Tickets(commands.Cog, name="Tickets"):
 
             try:
 
-                em = nextcord.Embed(title="Auroris Tickets", description="Are you sure you want to close this ticket? Reply with `close` if you are sure.", color=0x00a8ff)
+                em = nextcord.Embed(title="Arceus Tickets", description="Are you sure you want to close this ticket? Reply with `close` if you are sure.", color=0x00a8ff)
 
                 await ctx.send(embed=em)
-                await bot.wait_for('message', check=check, timeout=60)
+                await self.bot.wait_for('message', check=check, timeout=60)
                 await ctx.channel.delete()
 
                 index = data["ticket-channel-ids"].index(channel_id)
@@ -138,13 +139,13 @@ class Tickets(commands.Cog, name="Tickets"):
                     json.dump(data, f)
 
             except asyncio.TimeoutError:
-                em = nextcord.Embed(title="Auroris Tickets", description="You have run out of time to close this ticket. Please run the command again.", color=0x00a8ff)
+                em = nextcord.Embed(title="Arceus Tickets", description="You have run out of time to close this ticket. Please run the command again.", color=0x00a8ff)
                 await ctx.send(embed=em)
 
 
 
     @commands.command()
-    async def addaccess(ctx, role_id=None):
+    async def addaccess(self, ctx, role_id=None):
 
         with open('data.json') as f:
             data = json.load(f)
@@ -174,24 +175,24 @@ class Tickets(commands.Cog, name="Tickets"):
                     with open('data.json', 'w') as f:
                         json.dump(data, f)
 
-                    em = nextcord.Embed(title="Auroris Tickets", description="You have successfully added `{}` to the list of roles with access to tickets.".format(role.name), color=0x00a8ff)
+                    em = nextcord.Embed(title="Arceus Tickets", description="You have successfully added `{}` to the list of roles with access to tickets.".format(role.name), color=0x00a8ff)
 
                     await ctx.send(embed=em)
 
                 except:
-                    em = nextcord.Embed(title="Auroris Tickets", description="That isn't a valid role ID. Please try again with a valid role ID.")
+                    em = nextcord.Embed(title="Arceus Tickets", description="That isn't a valid role ID. Please try again with a valid role ID.")
                     await ctx.send(embed=em)
 
             else:
-                em = nextcord.Embed(title="Auroris Tickets", description="That role already has access to tickets!", color=0x00a8ff)
+                em = nextcord.Embed(title="Arceus Tickets", description="That role already has access to tickets!", color=0x00a8ff)
                 await ctx.send(embed=em)
 
         else:
-            em = nextcord.Embed(title="Auroris Tickets", description="Sorry, you don't have permission to run that command.", color=0x00a8ff)
+            em = nextcord.Embed(title="Arceus Tickets", description="Sorry, you don't have permission to run that command.", color=0x00a8ff)
             await ctx.send(embed=em)
 
     @commands.command()
-    async def delaccess(ctx, role_id=None):
+    async def delaccess(self, ctx, role_id=None):
         with open('data.json') as f:
             data = json.load(f)
 
@@ -225,25 +226,25 @@ class Tickets(commands.Cog, name="Tickets"):
                     with open('data.json', 'w') as f:
                         json.dump(data, f)
 
-                    em = nextcord.Embed(title="Auroris Tickets", description="You have successfully removed `{}` from the list of roles with access to tickets.".format(role.name), color=0x00a8ff)
+                    em = nextcord.Embed(title="Arceus Tickets", description="You have successfully removed `{}` from the list of roles with access to tickets.".format(role.name), color=0x00a8ff)
 
                     await ctx.send(embed=em)
 
                 else:
 
-                    em = nextcord.Embed(title="Auroris Tickets", description="That role already doesn't have access to tickets!", color=0x00a8ff)
+                    em = nextcord.Embed(title="Arceus Tickets", description="That role already doesn't have access to tickets!", color=0x00a8ff)
                     await ctx.send(embed=em)
 
             except:
-                em = nextcord.Embed(title="Auroris Tickets", description="That isn't a valid role ID. Please try again with a valid role ID.")
+                em = nextcord.Embed(title="Arceus Tickets", description="That isn't a valid role ID. Please try again with a valid role ID.")
                 await ctx.send(embed=em)
 
         else:
-            em = nextcord.Embed(title="Auroris Tickets", description="Sorry, you don't have permission to run that command.", color=0x00a8ff)
+            em = nextcord.Embed(title="Arceus Tickets", description="Sorry, you don't have permission to run that command.", color=0x00a8ff)
             await ctx.send(embed=em)
 
     @commands.command()
-    async def addpingedrole(ctx, role_id=None):
+    async def addpingedrole(self, ctx, role_id=None):
 
         with open('data.json') as f:
             data = json.load(f)
@@ -274,24 +275,24 @@ class Tickets(commands.Cog, name="Tickets"):
                     with open('data.json', 'w') as f:
                         json.dump(data, f)
 
-                    em = nextcord.Embed(title="Auroris Tickets", description="You have successfully added `{}` to the list of roles that get pinged when new tickets are created!".format(role.name), color=0x00a8ff)
+                    em = nextcord.Embed(title="Arceus Tickets", description="You have successfully added `{}` to the list of roles that get pinged when new tickets are created!".format(role.name), color=0x00a8ff)
 
                     await ctx.send(embed=em)
 
                 except:
-                    em = nextcord.Embed(title="Auroris Tickets", description="That isn't a valid role ID. Please try again with a valid role ID.")
+                    em = nextcord.Embed(title="Arceus Tickets", description="That isn't a valid role ID. Please try again with a valid role ID.")
                     await ctx.send(embed=em)
 
             else:
-                em = nextcord.Embed(title="Auroris Tickets", description="That role already receives pings when tickets are created.", color=0x00a8ff)
+                em = nextcord.Embed(title="Arceus Tickets", description="That role already receives pings when tickets are created.", color=0x00a8ff)
                 await ctx.send(embed=em)
 
         else:
-            em = nextcord.Embed(title="Auroris Tickets", description="Sorry, you don't have permission to run that command.", color=0x00a8ff)
+            em = nextcord.Embed(title="Arceus Tickets", description="Sorry, you don't have permission to run that command.", color=0x00a8ff)
             await ctx.send(embed=em)
 
     @commands.command()
-    async def delpingedrole(ctx, role_id=None):
+    async def delpingedrole(self, ctx, role_id=None):
 
         with open('data.json') as f:
             data = json.load(f)
@@ -326,25 +327,25 @@ class Tickets(commands.Cog, name="Tickets"):
                     with open('data.json', 'w') as f:
                         json.dump(data, f)
 
-                    em = nextcord.Embed(title="Auroris Tickets", description="You have successfully removed `{}` from the list of roles that get pinged when new tickets are created.".format(role.name), color=0x00a8ff)
+                    em = nextcord.Embed(title="Arceus Tickets", description="You have successfully removed `{}` from the list of roles that get pinged when new tickets are created.".format(role.name), color=0x00a8ff)
                     await ctx.send(embed=em)
 
                 else:
-                    em = nextcord.Embed(title="Auroris Tickets", description="That role already isn't getting pinged when new tickets are created!", color=0x00a8ff)
+                    em = nextcord.Embed(title="Arceus Tickets", description="That role already isn't getting pinged when new tickets are created!", color=0x00a8ff)
                     await ctx.send(embed=em)
 
             except:
-                em = nextcord.Embed(title="Auroris Tickets", description="That isn't a valid role ID. Please try again with a valid role ID.")
+                em = nextcord.Embed(title="Arceus Tickets", description="That isn't a valid role ID. Please try again with a valid role ID.")
                 await ctx.send(embed=em)
 
         else:
-            em = nextcord.Embed(title="Auroris Tickets", description="Sorry, you don't have permission to run that command.", color=0x00a8ff)
+            em = nextcord.Embed(title="Arceus Tickets", description="Sorry, you don't have permission to run that command.", color=0x00a8ff)
             await ctx.send(embed=em)
 
 
     @commands.command()
     @has_permissions(administrator=True)
-    async def addadminrole(ctx, role_id=None):
+    async def addadminrole(self, ctx, role_id=None):
 
         try:
             role_id = int(role_id)
@@ -358,16 +359,16 @@ class Tickets(commands.Cog, name="Tickets"):
             with open('data.json', 'w') as f:
                 json.dump(data, f)
 
-            em = nextcord.Embed(title="Auroris Tickets", description="You have successfully added `{}` to the list of roles that can run admin-level commands!".format(role.name), color=0x00a8ff)
+            em = nextcord.Embed(title="Arceus Tickets", description="You have successfully added `{}` to the list of roles that can run admin-level commands!".format(role.name), color=0x00a8ff)
             await ctx.send(embed=em)
 
         except:
-            em = nextcord.Embed(title="Auroris Tickets", description="That isn't a valid role ID. Please try again with a valid role ID.")
+            em = nextcord.Embed(title="Arceus Tickets", description="That isn't a valid role ID. Please try again with a valid role ID.")
             await ctx.send(embed=em)
 
     @commands.command()
     @has_permissions(administrator=True)
-    async def deladminrole(ctx, role_id=None):
+    async def deladminrole(self, ctx, role_id=None):
         try:
             role_id = int(role_id)
             role = ctx.guild.get_role(role_id)
@@ -387,16 +388,16 @@ class Tickets(commands.Cog, name="Tickets"):
                 with open('data.json', 'w') as f:
                     json.dump(data, f)
 
-                em = nextcord.Embed(title="Auroris Tickets", description="You have successfully removed `{}` from the list of roles that get pinged when new tickets are created.".format(role.name), color=0x00a8ff)
+                em = nextcord.Embed(title="Arceus Tickets", description="You have successfully removed `{}` from the list of roles that get pinged when new tickets are created.".format(role.name), color=0x00a8ff)
 
                 await ctx.send(embed=em)
 
             else:
-                em = nextcord.Embed(title="Auroris Tickets", description="That role isn't getting pinged when new tickets are created!", color=0x00a8ff)
+                em = nextcord.Embed(title="Arceus Tickets", description="That role isn't getting pinged when new tickets are created!", color=0x00a8ff)
                 await ctx.send(embed=em)
 
         except:
-            em = nextcord.Embed(title="Auroris Tickets", description="That isn't a valid role ID. Please try again with a valid role ID.")
+            em = nextcord.Embed(title="Arceus Tickets", description="That isn't a valid role ID. Please try again with a valid role ID.")
             await ctx.send(embed=em)
 
 def setup(bot: commands.Bot):

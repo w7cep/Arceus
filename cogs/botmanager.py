@@ -11,8 +11,8 @@ import random
 import traceback
 
 
-class Testing(commands.Cog, name="Testing"):
-    """Test commands"""
+class BotManager(commands.Cog, name="BotManager"):
+    """Adds a Bot Manager."""
 
     def __init__(self, bot: commands.Bot):
         self.bot = bot
@@ -21,30 +21,32 @@ class Testing(commands.Cog, name="Testing"):
         name="botmanager", description="Gives Bot Manager role to a Member."
     )
     @commands.has_permissions(administrator=True)
-    async def botmanager(self, ctx, member: nextcord.Member = None):
+    async def botmanager(self, ctx, member: nextcord.Member = None, *, reason=None):
         guild = ctx.guild
+        if reason == None:
+            reason = "You have been trusted to command Arceus!"
         if member == None:
             em1 = nextcord.Embed(
                 title="Bot Manager Error", description="Member to give Bot Manager role to - Not Found"
             )
             return await ctx.send(embed=em1)
-        elif member.id == ctx.author.id:
+            '''elif member.id == ctx.author.id:
             em5 = nextcord.Embed(
                 title="Bot Manager Error", description="Don't bother, ive tried"
             )
-            return await ctx.send(embed=em5)
+            return await ctx.send(embed=em5)'''
         elif ctx.author.top_role.position < member.top_role.position:
             em3 = nextcord.Embed(
                 title="Bot Manager Error",
                 description="Member **higher** than you in the role heirarchy - Invalid Permission",
             )
             return await ctx.send(embed=em3)
-        elif ctx.author.top_role.position == member.top_role.position:
+        '''elif ctx.author.top_role.position == member.top_role.position:
             em4 = nextcord.Embed(
                 title="Bot ManagerError",
                 description="Member has same role as you in the role heirarchy - Invalid Permission",
             )
-            return await ctx.send(embed=em4)
+            return await ctx.send(embed=em4)'''
         if not (ctx.guild.me.guild_permissions.manage_roles):
             embed2 = nextcord.Embed(
                 title="Bot Manager Error",
@@ -52,19 +54,18 @@ class Testing(commands.Cog, name="Testing"):
             )
             return await ctx.send(embed=embed2)
         BotManagerRole = nextcord.utils.get(guild.roles, name="Bot Manager")
-        if member.id in [ctx.author.id, self.bot.user.id]:
+        '''.git\if member.id in [ctx.author.id, self.bot.user.id]:
             em3 = nextcord.Embed(
                 title="Bot Manager Error",
                 description="You cannot give yourself or the bot this role!",
             )
-            return await ctx.send(embed=em3)
+            return await ctx.send(embed=em3)'''
         if not BotManagerRole:
             BotManagerRole = await guild.create_role(name="Bot Manager")
             await ctx.send("No Bot Manager role found. Creating Bot Manager role...")
             '''for channel in guild.channels:
                 await channel.set_permissions(
                     BotManagerRole,
-                    view_channel=True
                 )'''
 
         embed = nextcord.Embed(
@@ -80,4 +81,4 @@ class Testing(commands.Cog, name="Testing"):
         return
 
 def setup(bot: commands.Bot):
-    bot.add_cog(Testing(bot))
+    bot.add_cog(BotManager(bot))

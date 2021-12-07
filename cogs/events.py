@@ -73,10 +73,10 @@ class Events(commands.Cog, name="Events"):
                     and (datetime.utcnow()-m.created_at).seconds < 60)
 
         if message.content == "!d bump":
-            await message.channel.send("That was a good bumping!\nI will remind you in 2 hours.")
-            await asyncio.sleep(15)
+            await message.channel.send("That was a good bumping!\nI will remind you in 2 hours for another!")
+            await asyncio.sleep(7200)
             await message.channel.send("<@&881596772143759400> I'm ready for another good bumping!")
-#7200
+#7200 seconds = 2 hours
 
 def setup(bot: commands.Bot):
     bot.add_cog(Events(bot))

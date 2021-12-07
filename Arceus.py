@@ -174,10 +174,12 @@ def main():
     bot.mongo = motor.motor_asyncio.AsyncIOMotorClient(str(bot.connection_url))
     bot.db1 = bot.mongo["configs"]
     bot.db2 = bot.mongo["infractions"]
+    bot.db3 = bot.mongo["blacklist"]
+    bot.db4 = bot.mongo["suggestions"]
     bot.pf = Document(bot.db1, "Arceus_Prefixes")
     bot.warns = Document(bot.db2, "Arceus_Warns")
-    bot.db3 = bot.mongo["blacklist"]
     bot.bl = Document(bot.db3, "Users")
+    bot.sc = Document(bot.db4, "Suggestion_Channel")
 
         # load essential cogs
 

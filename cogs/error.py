@@ -13,7 +13,7 @@ class ErrorLogCog(commands.Cog, name="Error Logs"):
         self.handler = ErrorHandler(self.logger)
 
     @commands.command(name="logs")
-    @commands.is_owner()
+    @commands.has_role('Bot Manager')
     async def logs(self, ctx: commands.Context, num_lines: int = 50):
         """Show recent logs from err.log
 
