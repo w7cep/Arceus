@@ -14,13 +14,13 @@ class Profanity(commands.Cog, name="Profanity"):
 
     @commands.group(invoke_without_command=True)
     @commands.guild_only()
-    @commands.has_permissions(manage_messages=True)
+    @commands.has_role("Bot Manager")
     async def profanity(self, ctx):
         """Add or Delete banned words."""
         await ctx.send("Invalid sub-command specified")
 
     @profanity.command(name="add")
-    @commands.has_permissions(manage_messages=True)
+    @commands.has_role("Bot Manager")
     async def add(self, ctx, *words):
         '''Add cuss word to file.'''
         with open("./data/profanity.txt", "a", encoding="utf-8") as f:
@@ -31,7 +31,7 @@ class Profanity(commands.Cog, name="Profanity"):
         await ctx.send("Action complete.")
 
     @profanity.command(name="del")
-    @commands.has_permissions(manage_messages=True)
+    @commands.has_role("Bot Manager")
     async def remove_profanity(self, ctx, *words):
         '''Delete cuss word from file.'''
         with open("./data/profanity.txt", "r", encoding="utf-8") as f:

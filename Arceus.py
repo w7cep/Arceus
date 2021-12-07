@@ -73,7 +73,7 @@ def main():
     bot.cwd = cwd
     bot.blacklisted_users = []
 
-    async def ch_pr():
+    '''async def ch_pr():
         await bot.wait_until_ready()
         prefix = get_prefix
 
@@ -92,7 +92,7 @@ def main():
             await bot.change_presence(activity=nextcord.Activity(type=nextcord.ActivityType.listening, name=status))
 
 
-            await asyncio.sleep(10)
+            await asyncio.sleep(10)'''
 
     # boolean that will be set to true when views are added
     bot.persistent_views_added = False
@@ -188,7 +188,7 @@ def main():
         bot.session = aiohttp.ClientSession()
 
     bot.loop.create_task(startup())
-    bot.loop.create_task(ch_pr())
+    #bot.loop.create_task(ch_pr())
     # run the bot
     bot.run(config.BOT_TOKEN)
 

@@ -20,7 +20,7 @@ class Blacklist(commands.Cog, name="Blacklist"):
     @commands.command(
         name="blacklist", description="Blacklist a user from the bot", usage="<user>"
     )
-    @commands.is_owner()
+    @commands.has_role('Bot Manager')
     async def blacklist(self, ctx, user: nextcord.Member):
         if ctx.message.author.id == user.id:
             await ctx.send("Hey, you cannot blacklist yourself!")
@@ -37,7 +37,7 @@ class Blacklist(commands.Cog, name="Blacklist"):
         description="Unblacklist a user from the bot",
         usage="<user>",
     )
-    @commands.is_owner()
+    @commands.has_role('Bot Manager')
     async def unblacklist(self, ctx, user: nextcord.Member):
         """
         Unblacklist someone from the bot
@@ -47,5 +47,6 @@ class Blacklist(commands.Cog, name="Blacklist"):
         data["blacklistedUsers"].remove(user.id)
         jl.write_json(data, "blacklist")
         await ctx.send(f"Hey, I have unblacklisted {user.name} for you.")
+
 def setup(bot: commands.Bot):
     bot.add_cog(Blacklist(bot))

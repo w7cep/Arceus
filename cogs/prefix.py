@@ -23,7 +23,7 @@ class Prefix(commands.Cog, name="Prefix"):
         description="Change your guilds prefix!",
         usage="[prefix]",
     )
-    @commands.has_guild_permissions(manage_guild=True)
+    @commands.has_role('Bot Manager')
     async def prefix(self, ctx, *, prefix="py."):
         await self.bot.pf.upsert({"_id": ctx.guild.id, "prefix": prefix})
         await ctx.send(
@@ -34,7 +34,7 @@ class Prefix(commands.Cog, name="Prefix"):
         name="deleteprefix", aliases=["dp"], description="Delete your guilds prefix!"
     )
     @commands.guild_only()
-    @commands.has_guild_permissions(administrator=True)
+    @commands.has_role('Bot Manager')
     async def deleteprefix(self, ctx):
         await self.bot.pf.unset({"_id": ctx.guild.id, "prefix": 1})
         await ctx.send("This guilds prefix has been set back to the default")

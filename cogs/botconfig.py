@@ -17,8 +17,9 @@ class Botconfig(commands.Cog, name="Botconfig"):
 
 
     @commands.command(aliases=['game'])
+    @commands.has_role('Bot Manager')
     async def changegame(self, ctx, gameType: str, *, gameName: str):
-        '''Ändert das derzeit spielende Spiel (BOT OWNER ONLY)'''
+        '''Changes the game currently playing (BOT OWNER ONLY)'''
         gameType = gameType.lower()
         if gameType == 'playing':
             activityType = nextcord.ActivityType.playing
@@ -32,11 +33,12 @@ class Botconfig(commands.Cog, name="Botconfig"):
         memberCount = len(list(self.bot.get_all_members()))
         gameName = gameName.format(guilds = guildsCount, members = memberCount)
         await self.bot.change_presence(activity=nextcord.Activity(type=activityType, name=gameName))
-        await ctx.send(f'**:ok:** Ändere das Spiel zu: {gameType} **{gameName}**')
+        await ctx.send(f'**:ok:** Change the game to: {gameType} ** {gameName} **')
 
     @commands.command()
+    @commands.has_role('Bot Manager')
     async def changestatus(self, ctx, status: str):
-        '''Ändert den Online Status vom Bot (BOT OWNER ONLY)'''
+        '''Changes the online status of the bot (BOT OWNER ONLY)'''
         status = status.lower()
         if status == 'offline' or status == 'off' or status == 'invisible':
             nextcordStatus = nextcord.Status.invisible
@@ -47,11 +49,12 @@ class Botconfig(commands.Cog, name="Botconfig"):
         else:
             nextcordStatus = nextcord.Status.online
         await self.bot.change_presence(status=nextcordStatus)
-        await ctx.send(f'**:ok:** Ändere Status zu: **{nextcordStatus}**')
+        await ctx.send(f'**:ok:** Change status to: **{nextcordStatus}**')
 
     @commands.command(aliases=['guilds'])
+    @commands.has_role('Bot Manager')
     async def servers(self, ctx):
-        '''Listet die aktuellen verbundenen Guilds auf (BOT OWNER ONLY)'''
+        '''Lists the current connected guilds (BOT OWNER ONLY)'''
         msg = '```py\n'
         msg += '{!s:19s} | {!s:>5s} | {} | {}\n'.format('ID', 'Member', 'Name', 'Owner')
         for guild in self.bot.guilds:
@@ -60,9 +63,10 @@ class Botconfig(commands.Cog, name="Botconfig"):
         await ctx.send(msg)
 
     @commands.command()
+    @commands.is_owner()
     async def leaveserver(self, ctx, guildid: str):
-        '''Tritt aus einem Server aus (BOT OWNER ONLY)
-        Beispiel:
+        '''Exits a server (BOT OWNER ONLY)
+        Example:
         -----------
         :leaveserver 102817255661772800
         '''
@@ -73,14 +77,15 @@ class Botconfig(commands.Cog, name="Botconfig"):
             guild = self.bot.get_guild(guildid)
             if guild:
                 await guild.leave()
-                msg = f':ok: Austritt aus {guild.name} erfolgreich!'
+                msg = f':ok: Successful exit from {guild.name}!'
             else:
-                msg = ':x: Konnte keine passende Guild zu dieser ID finden!'
+                msg = ":x: Couldn't find a suitable guild for this ID!"
         await ctx.send(msg)
 
     @commands.command()
+    @commands.has_role('Bot Manager')
     async def discriminator(self, ctx, disc: str):
-        '''Gibt Benutzer mit dem jeweiligen Discriminator zurück'''
+        '''Returns users with the respective discriminator'''
 
         discriminator = disc
         memberList = ''
@@ -93,18 +98,18 @@ class Botconfig(commands.Cog, name="Botconfig"):
         if memberList:
             await ctx.send(memberList)
         else:
-            await ctx.send(':x: Konnte niemanden finden')
+            await ctx.send(":x: Couldn't find anyone")
 
     @commands.command()
-    @commands.bot_has_permissions(manage_nicknames = True)
+    @commands.has_role('Bot Manager')
     async def nickname(self, ctx, *name):
-        '''Ändert den Server Nickname vom Bot (BOT OWNER ONLY)'''
+        '''Changes the server nickname of the bot (BOT OWNER ONLY)'''
         nickname = ' '.join(name)
         await ctx.me.edit(nick=nickname)
         if nickname:
-            msg = f':ok: Ändere meinen Server Nickname zu: **{nickname}**'
+            msg = f'Changed my server nickname to: **{nickname}**'
         else:
-            msg = f':ok: Reset von meinem Server Nickname auf: **{ctx.me.name}**'
+            msg = f'Reset my server nickname on: **{ctx.me.name}**'
         await ctx.send(msg)
 
     """@commands.command()
@@ -220,7 +225,7 @@ class Botconfig(commands.Cog, name="Botconfig"):
     @commands.guild_only()
     @commands.is_owner()
     async def list_extensions(self, ctx):
-        list = nextcord.Embed(title="Extensions List", description="1.blacklist\n2.block\n3.channel\n4.economy\n5.info\n6.infractions\n7.instructions\n8.misc\n9.moderation\n10.profanity\n11.rtfm\n12.support\n13.tickets")
+        list = nextcord.Embed(title="Extensions List", description="1.economy\n2.info\n3.infractions\n4.instructions\n5.misc\n6.support\n7.tickets\n8.leveling")
         await ctx.send(embed=list)
 
 

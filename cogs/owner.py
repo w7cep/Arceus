@@ -143,7 +143,7 @@ class Owner(commands.Cog, name="Owner"):
 
     @commands.command()
     @commands.has_permissions(manage_roles=True)
-    async def botmanager(self, ctx, member: nextcord.Member = None, *, role: nextcord.Role = None):
+    async def bottester(self, ctx, member: nextcord.Member = None, *, role: nextcord.Role = None):
         guild = self.bot.get_guild(config.GUILD_ID)
         if member is None:
             member = "<!@829538381624639488>"
