@@ -59,7 +59,7 @@ class Events(commands.Cog, name="Events"):
         def _check(m):
             return (m.author == message.author
                     and len(m.mentions)
-                    and (datetime.utcnow()-m.created_at).seconds < 60)
+                    and (datetime.now()-m.created_at).seconds < 60)
 
         if profanity.contains_profanity(message.content):
             await message.delete()
@@ -70,7 +70,7 @@ class Events(commands.Cog, name="Events"):
         def _check(m):
             return (m.author == message.author
                     and len(m.mentions)
-                    and (datetime.utcnow()-m.created_at).seconds < 60)
+                    and (datetime.now()-m.created_at).seconds < 60)
 
         if message.content == "!d bump":
             await message.channel.send("That was a good bumping!\nI will remind you in 2 hours for another!")

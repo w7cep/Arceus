@@ -9,22 +9,28 @@ import nextcord
 from nextcord.ext import commands
 import asyncio
 from pymongo import MongoClient
+import nextcord
+from nextcord.ext import commands, tasks
+import asyncio
+from itertools import cycle
+import os
+import json
+import random
 
 auth_url = "mongodb+srv://W7CEP:Hudsongene0106@cluster2.5tx6k.mongodb.net/myFirstDatabase?retryWrites=true&w=majority"
 
-main_shop = [
-            {"name":"Watch","price":100,"description": "Time"},
-            {"name":"Laptop","price":1000,"description": "Work"},
-            {"name":"PC","price":10000,"description": "Gaming"}
-            ]
+main_shop = [{"name":"Watch","price":100,"description":"Time"},
+            {"name":"Laptop","price":1000,"description":"Work"},
+            {"name":"PC","price":10000,"description":"Gaming"},
+            {"name":"Ferrari","price":99999,"description":"Sports Car"}]
 
 
 
 async def open_bank(user):
     cluster = MongoClient(auth_url)
-    db = cluster["Arceus-economy"]
+    db = cluster["Arceus"]
 
-    cursor = db["economy"]
+    cursor = db["Arceus-economy"]
 
     try:
         post = {"_id": user.id, "wallet": 0, "bank": 5000} # You can add as many columns as you can in this list !!!
@@ -37,9 +43,9 @@ async def open_bank(user):
 
 async def get_bank_data(user):
     cluster = MongoClient(auth_url)
-    db = cluster["Arceus-economy"]
+    db = cluster["Arceus"]
 
-    cursor = db["economy"]
+    cursor = db["Arceus-economy"]
 
     user_data = cursor.find({"_id": user.id})
 
@@ -58,9 +64,9 @@ async def get_bank_data(user):
 
 async def update_bank(user, amount=0, mode="wallet"):
     cluster = MongoClient(auth_url)
-    db = cluster["Arceus-economy"]
+    db = cluster["Arceus"]
 
-    cursor = db["economy"]
+    cursor = db["Arceus-economy"]
 
     cursor.update_one({"_id": user.id}, {"$inc": {str(mode): amount}})
 
@@ -70,43 +76,21 @@ class Economy(commands.Cog, name="Economy"):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
 
-import nextcord
-from nextcord.ext import commands, tasks
-import asyncio
-from itertools import cycle
-import os
-import json
-import random
 
-client = commands.Bot(command_prefix=')')
-
-client.remove_command("help")
-
-status = cycle(
-    ['Try )help','Prefix - )'])
-
-
-@client.event
-async def on_ready():
-    change_status.start()
-    print('Bot is ready')
-
-@tasks.loop(seconds=5)
-async def change_status():
-    await client.change_presence(activity=nextcord.Game(next(status)))
+main_shop = [{"name":"Watch","price":100,"description":"Time"},
+            {"name":"Laptop","price":1000,"description":"Work"},
+            {"name":"PC","price":10000,"description":"Gaming"},
+            {"name":"Ferrari","price":99999,"description":"Sports Car"}]
 
 
 ####################################################################
 ####################################################################
 # Main code starts :)
 
-mainshop = [{"name":"Watch","price":100,"description":"Time"},
-            {"name":"Laptop","price":1000,"description":"Work"},
-            {"name":"PC","price":10000,"description":"Gaming"},
-            {"name":"Ferrari","price":99999,"description":"Sports Car"}]
 
-@client.command(aliases=['bal'])
-async def balance(ctx):
+
+@commands.command(aliases=['bal'])
+async def balance(self, ctx):
     await open_account(ctx.author)
     user = ctx.author
 
@@ -120,8 +104,8 @@ async def balance(ctx):
     em.add_field(name='Bank Balance',value=bank_amt)
     await ctx.send(embed= em)
 
-@client.command()
-async def beg(ctx):
+@commands.command()
+async def beg(self, ctx):
     await open_account(ctx.author)
     user = ctx.author
 
@@ -137,8 +121,8 @@ async def beg(ctx):
         json.dump(users,f)
 
 
-@client.command(aliases=['wd'])
-async def withdraw(ctx,amount = None):
+@commands.command(aliases=['wd'])
+async def withdraw(self, ctx, amount = None):
     await open_account(ctx.author)
     if amount == None:
         await ctx.send("Please enter the amount")
@@ -160,8 +144,8 @@ async def withdraw(ctx,amount = None):
     await ctx.send(f'{ctx.author.mention} You withdrew {amount} coins')
 
 
-@client.command(aliases=['dp'])
-async def deposit(ctx,amount = None):
+@commands.command(aliases=['dp'])
+async def deposit(self, ctx, amount = None):
     await open_account(ctx.author)
     if amount == None:
         await ctx.send("Please enter the amount")
@@ -183,8 +167,8 @@ async def deposit(ctx,amount = None):
     await ctx.send(f'{ctx.author.mention} You deposited {amount} coins')
 
 
-@client.command(aliases=['sm'])
-async def send(ctx,member : nextcord.Member,amount = None):
+@commands.command(aliases=['sm'])
+async def send(self, ctx, member : nextcord.Member, amount = None):
     await open_account(ctx.author)
     await open_account(member)
     if amount == None:
@@ -209,8 +193,8 @@ async def send(ctx,member : nextcord.Member,amount = None):
     await ctx.send(f'{ctx.author.mention} You gave {member} {amount} coins')
 
 
-@client.command(aliases=['rb'])
-async def rob(ctx,member : nextcord.Member):
+@commands.command(aliases=['rb'])
+async def rob(self, ctx, member : nextcord.Member):
     await open_account(ctx.author)
     await open_account(member)
     bal = await update_bank(member)
@@ -227,8 +211,8 @@ async def rob(ctx,member : nextcord.Member):
     await ctx.send(f'{ctx.author.mention} You robbed {member} and got {earning} coins')
 
 
-@client.command()
-async def slots(ctx,amount = None):
+@commands.command()
+async def slots(self, ctx, amount = None):
     await open_account(ctx.author)
     if amount == None:
         await ctx.send("Please enter the amount")
@@ -260,8 +244,8 @@ async def slots(ctx,amount = None):
         await ctx.send(f'You lose :( {ctx.author.mention}')
 
 
-@client.command()
-async def shop(ctx):
+@commands.command()
+async def shop(self, ctx):
     em = nextcord.Embed(title = "Shop")
 
     for item in mainshop:
@@ -274,8 +258,8 @@ async def shop(ctx):
 
 
 
-@client.command()
-async def buy(ctx,item,amount = 1):
+@commands.command()
+async def buy(self, ctx, item,amount = 1):
     await open_account(ctx.author)
 
     res = await buy_this(ctx.author,item,amount)
@@ -292,8 +276,8 @@ async def buy(ctx,item,amount = 1):
     await ctx.send(f"You just bought {amount} {item}")
 
 
-@client.command()
-async def bag(ctx):
+@commands.command()
+async def bag(self, ctx):
     await open_account(ctx.author)
     user = ctx.author
     users = await get_bank_data()
@@ -309,12 +293,12 @@ async def bag(ctx):
         name = item["item"]
         amount = item["amount"]
 
-        em.add_field(name = name, value = amount)    
+        em.add_field(name = name, value = amount)
 
     await ctx.send(embed = em)
 
 
-async def buy_this(user,item_name,amount):
+async def buy_this(user, item_name,amount):
     item_name = item_name.lower()
     name_ = None
     for item in mainshop:
@@ -348,13 +332,13 @@ async def buy_this(user,item_name,amount):
                 users[str(user.id)]["bag"][index]["amount"] = new_amt
                 t = 1
                 break
-            index+=1 
+            index+=1
         if t == None:
             obj = {"item":item_name , "amount" : amount}
             users[str(user.id)]["bag"].append(obj)
     except:
         obj = {"item":item_name , "amount" : amount}
-        users[str(user.id)]["bag"] = [obj]        
+        users[str(user.id)]["bag"] = [obj]
 
     with open("mainbank.json","w") as f:
         json.dump(users,f)
@@ -362,10 +346,10 @@ async def buy_this(user,item_name,amount):
     await update_bank(user,cost*-1,"wallet")
 
     return [True,"Worked"]
-    
 
-@client.command()
-async def sell(ctx,item,amount = 1):
+
+@commands.command()
+async def sell(self, ctx, item, amount = 1):
     await open_account(ctx.author)
 
     res = await sell_this(ctx.author,item,amount)
@@ -383,7 +367,7 @@ async def sell(ctx,item,amount = 1):
 
     await ctx.send(f"You just sold {amount} {item}.")
 
-async def sell_this(user,item_name,amount,price = None):
+async def sell_this(self, user, item_name, amount,price = None):
     item_name = item_name.lower()
     name_ = None
     for item in mainshop:
@@ -431,8 +415,8 @@ async def sell_this(user,item_name,amount,price = None):
     return [True,"Worked"]
 
 
-@client.command(aliases = ["lb"])
-async def leaderboard(ctx,x = 1):
+@commands.command(aliases = ["lb"])
+async def leaderboard(self, ctx, x = 1):
     users = await get_bank_data()
     leader_board = {}
     total = []
@@ -448,7 +432,7 @@ async def leaderboard(ctx,x = 1):
     index = 1
     for amt in total:
         id_ = leader_board[amt]
-        member = client.get_user(id_)
+        member = bot.get_user(id_)
         name = member.name
         em.add_field(name = f"{index}. {name}" , value = f"{amt}",  inline = False)
         if index == x:

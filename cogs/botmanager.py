@@ -24,7 +24,7 @@ class BotManager(commands.Cog, name="BotManager"):
     async def botmanager(self, ctx, member: nextcord.Member = None, *, reason=None):
         guild = ctx.guild
         if reason == None:
-            reason = "You have been trusted to command Arceus!"
+            reason = "You have been trusted with the power to command Arceus!"
         if member == None:
             em1 = nextcord.Embed(
                 title="Bot Manager Error", description="Member to give Bot Manager role to - Not Found"
@@ -69,14 +69,14 @@ class BotManager(commands.Cog, name="BotManager"):
                 )'''
 
         embed = nextcord.Embed(
-            title="We hav a new Bot Manager!",
+            title="We have a new Bot Manager!",
             description=f"{member.mention} is now a Bot Manager!",
             colour=nextcord.Colour.green(),
         )
         await ctx.send(embed=embed)
         await member.add_roles(BotManagerRole)
         await member.send(
-            f"You have been granted __Admin__ access to: **Arceus**"
+            f"You have been granted __Admin__ access to: **Arceus** | Reason: {reason}"
         )
         return
 

@@ -28,8 +28,8 @@ class HelpPages(menus.ListPageSource):
         embed = nextcord.Embed(title="__Bot Commands__",
                                colour=self._help_command.COLOUR)
         embed.description = (
-            f'Use "<Prefix> <command>" for more info on a command.\n'
-            f'Use "<Prefix> <category>" for more info on a category.'
+            f'Use "<Prefix> help <command>" for more info on a command.\n'
+            f'Use "<Prefix> help <category>" for more info on a category.'
         )
         for entry in entries:
             embed.add_field(
@@ -57,8 +57,8 @@ class NewHelpCommand(commands.MinimalHelpCommand):
         invoked_with = self.invoked_with
         embed = nextcord.Embed(title="__Bot Commands__", colour=self.COLOUR)
         embed.description = (
-            f'Use "<Prefix> <command>" for more info on a command.\n'
-            f'Use "<Prefix> <category>" for more info on a category.'
+            f'Use "<Prefix> help <command>" for more info on a command.\n'
+            f'Use "<Prefix> help <category>" for more info on a category.'
         )
 
         embed_fields: List[EmbedField] = []

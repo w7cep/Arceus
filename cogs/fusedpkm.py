@@ -27,7 +27,7 @@ class FusedPkm(commands.Cog, name="FusedPkm"):
         def _check(m):
             return (m.author == message.author
                     and len(m.mentions)
-                    and (datetime.utcnow()-m.created_at).seconds < 60)
+                    and (datetime.now()-m.created_at).seconds < 60)
 
         if message.content.startswith("$trade kyurem-black"):
             await message.channel.send("You can't trade fused pokemon!")
@@ -40,7 +40,7 @@ class FusedPkm(commands.Cog, name="FusedPkm"):
         def _check(m):
             return (m.author == message.author
                     and len(m.mentions)
-                    and (datetime.utcnow()-m.created_at).seconds < 60)
+                    and (datetime.now()-m.created_at).seconds < 60)
 
         if message.content.startswith("$trade necrozma-dusk-mane"):
             await message.channel.send("You can't trade fused pokemon!")
@@ -53,7 +53,7 @@ class FusedPkm(commands.Cog, name="FusedPkm"):
         def _check(m):
             return (m.author == message.author
                     and len(m.mentions)
-                    and (datetime.utcnow()-m.created_at).seconds < 60)
+                    and (datetime.now()-m.created_at).seconds < 60)
 
         if message.content.startswith("$trade necrozma-dawn-wings"):
             await message.channel.send("You can't trade fused pokemon!")
@@ -66,7 +66,7 @@ class FusedPkm(commands.Cog, name="FusedPkm"):
         def _check(m):
             return (m.author == message.author
                     and len(m.mentions)
-                    and (datetime.utcnow()-m.created_at).seconds < 60)
+                    and (datetime.now()-m.created_at).seconds < 60)
 
         if message.content.startswith("$trade calyrex-ice"):
             await message.channel.send("You can't trade fused pokemon!")
@@ -79,7 +79,7 @@ class FusedPkm(commands.Cog, name="FusedPkm"):
         def _check(m):
             return (m.author == message.author
                     and len(m.mentions)
-                    and (datetime.utcnow()-m.created_at).seconds < 60)
+                    and (datetime.now()-m.created_at).seconds < 60)
 
         if message.content.startswith("$trade calyrex-shadow"):
             await message.channel.send("You can't trade fused pokemon!")
@@ -92,7 +92,7 @@ class FusedPkm(commands.Cog, name="FusedPkm"):
         def _check(m):
             return (m.author == message.author
                     and len(m.mentions)
-                    and (datetime.utcnow()-m.created_at).seconds < 60)
+                    and (datetime.now()-m.created_at).seconds < 60)
 
         if message.content.startswith("$trade Kyurem-White"):
             await message.channel.send("You can't trade fused pokemon!")
@@ -105,7 +105,7 @@ class FusedPkm(commands.Cog, name="FusedPkm"):
         def _check(m):
             return (m.author == message.author
                     and len(m.mentions)
-                    and (datetime.utcnow()-m.created_at).seconds < 60)
+                    and (datetime.now()-m.created_at).seconds < 60)
 
         if message.content.startswith("$trade Kyurem-Black"):
             await message.channel.send("You can't trade fused pokemon!")
@@ -118,7 +118,7 @@ class FusedPkm(commands.Cog, name="FusedPkm"):
         def _check(m):
             return (m.author == message.author
                     and len(m.mentions)
-                    and (datetime.utcnow()-m.created_at).seconds < 60)
+                    and (datetime.now()-m.created_at).seconds < 60)
 
         if message.content.startswith("$trade Necrozma-Dusk-Mane"):
             await message.channel.send("You can't trade fused pokemon!")
@@ -131,7 +131,7 @@ class FusedPkm(commands.Cog, name="FusedPkm"):
         def _check(m):
             return (m.author == message.author
                     and len(m.mentions)
-                    and (datetime.utcnow()-m.created_at).seconds < 60)
+                    and (datetime.now()-m.created_at).seconds < 60)
 
         if message.content.startswith("$trade Necrozma-Dawn-Wings"):
             await message.channel.send("You can't trade fused pokemon!")
@@ -144,7 +144,7 @@ class FusedPkm(commands.Cog, name="FusedPkm"):
         def _check(m):
             return (m.author == message.author
                     and len(m.mentions)
-                    and (datetime.utcnow()-m.created_at).seconds < 60)
+                    and (datetime.now()-m.created_at).seconds < 60)
 
         if message.content.startswith("$trade Calyrex-Ice"):
             await message.channel.send("You can't trade fused pokemon!")
@@ -157,7 +157,7 @@ class FusedPkm(commands.Cog, name="FusedPkm"):
         def _check(m):
             return (m.author == message.author
                     and len(m.mentions)
-                    and (datetime.utcnow()-m.created_at).seconds < 60)
+                    and (datetime.now()-m.created_at).seconds < 60)
 
         if message.content.startswith("$trade Calyrex-Shadow"):
             await message.channel.send("You can't trade fused pokemon!")

@@ -24,7 +24,7 @@ class Prefix(commands.Cog, name="Prefix"):
         usage="[prefix]",
     )
     @commands.has_role('Bot Manager')
-    async def prefix(self, ctx, *, prefix="py."):
+    async def prefix(self, ctx, *, prefix=">"):
         await self.bot.pf.upsert({"_id": ctx.guild.id, "prefix": prefix})
         await ctx.send(
             f"The guild prefix has been set to `{prefix}`. Use `{prefix}prefix [prefix]` to change it again!"
