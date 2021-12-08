@@ -565,6 +565,16 @@ class Rtfm(commands.Cog):
         embed = nextcord.Embed(title="Purged rtfm cache.", color=nextcord.Color.blurple())
         await ctx.send(embed=embed)
 
+    @commands.command()
+    async def vscode(self, ctx):
+        em = nextcord.Embed(
+            title="__**VS Code Online**__",
+            description="Click [here](https://vscode.dev) to open the VS Code Online.",
+            color=nextcord.Color.dark_green(),
+            url="https://vscode.dev/"
+            )
+        em.set_image(url="https://cdn.discordapp.com/attachments/909167663496966175/918234042812493854/unknown.png")
+        await ctx.send(embed=em)
 
 def setup(bot):
     bot.add_cog(Rtfm(bot))
