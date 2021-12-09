@@ -10,13 +10,6 @@ import config
 #----------------------------------------------------------------------------------------------------------------------------------------------------------
 #----------------------------------------------------------------------------------------------------------------------------------------------------------
 
-class App(commands.Cog, name="App"):
-    """Application to become a moderator"""
-
-    def __init__(self, bot: commands.Bot):
-        self.bot = bot
-
-#----------------------------------------------------------------------------------------------------------------------------------------------------------
 
 class ApplyView(nextcord.ui.View):
     def __init__(self, add_only: bool = False, required_roles: List[int] = None):
@@ -95,13 +88,20 @@ class ApplyConfirm(ApplyView):
 
 #----------------------------------------------------------------------------------------------------------------------------------------------------------
 
+class App(commands.Cog, name="App"):
+    """Application to become a moderator"""
+
+    def __init__(self, bot: commands.Bot):
+        self.bot = bot
+
+#----------------------------------------------------------------------------------------------------------------------------------------------------------
     @commands.command()
     @commands.guild_only()
     async def apply(self, ctx):
         view = ApplyConfirm()
 
         # we will make a list of questions here and you may add as more as you like
-        questions = ["How old are you?", "Have you ever been a moderator in a discor server?", "What makes you a good canidate to be a moderator?", "Test Question?"]
+        questions = ["Do you have two-factor authentication (2FA) set up on your discord account?", "What continent are you on?", "Please enter today's date in your time zone.", "Please enter the current time in your time zone, doesn't have to be super accurate.", "Please enter your general availability. eg: weekdays 5pm-9pm, some weekends all day. This does not have to be precise and will not be enforced.", "Do you have a modded/CFW/hacked and unbanned switch?", "Have/Do you use the pokemon bots on Greninj's Grotto?", "How familiar with pkhex are you? None,Somewhat,Very", "Is your profile picture on discord fairly safe?", "Are you generally not unreasonably argumentative?", "Do you enjoy helping others when you have time?", "Have you read and understand most of the bot instructions on the server?", "Do you believe you are active on the server?", "Do you have experience as a mod in other Discord servers?", "Please explain why you would want to join the moderation team in as many or as few words as you would like."]
 
         answers = [] # this will be an empty list of answers because it will be filled with the user's responses
 
@@ -144,8 +144,8 @@ class ApplyConfirm(ApplyView):
                     a = answer
 
             # this will add a field to the embed
-            embed.add_field(name=question, value=a)
-
+            embed.add_field(name=question, value=a, inline=False)
+            embed.set_thumbnail(url="https://cdn.discordapp.com/attachments/862327803964817438/907116113970741328/21035.jpg")
         await apps_logs_channel.send(embed=embed, view=view)
         await ctx.author.send("Your application has been submitted!")
 
