@@ -50,3 +50,5 @@ SUBSCRIBER_ROLE_ID = int(os.getenv("SUBSCRIBER_ROLE_ID", ""))
 # Discord Message IDs
 RULES_MESSAGE_ID = int(os.getenv("RULES_MESSAGE_ID", ""))
 BOT_RULES_MESSAGE_ID = int(os.getenv("BOT_RULES_MESSAGE_ID", ""))
+
+MODERATOR_ROLE_ID = int(os.getenv("MODERATOR_ROLE_ID", ""))

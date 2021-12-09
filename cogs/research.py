@@ -1,5 +1,6 @@
 import nextcord
 from nextcord.ext import commands
+from nextcord.ext.commands import BucketType, cooldown
 import utils.json_loader as jl
 from utils import checks
 import inspect
@@ -113,6 +114,7 @@ class Research(commands.Cog, name="Research"):
         description="button test function",
 
     )
+    @cooldown(1, 15, BucketType.guild)
     #if you want to restrict command to a role
     #@commands.has_role("DiscordAdmin")
     @commands.has_permissions(send_messages=True)
@@ -127,62 +129,10 @@ class Research(commands.Cog, name="Research"):
             {'label':'Button C', 'colour': 'blurple'},
             {'label':'Button D', 'colour': 'grey'},
 
-
         ]
         #Launch the ask function
         btn_pressed= await ask(self, ctx, msg_title, msg_desc, btn_data, ctx.author.avatar.url, self.bot.user.avatar.url)
         await ctx.send(f"The button pressed: {btn_pressed}")
-
-    @commands.command()
-    async def apply(self, ctx):
-        # we will make a list of questions here and you may add as more as you like
-        questions = ["How old are you?", "Have you ever been a moderator in a discor server?", "What makes you a good canidate to be a moderator?", "Test Question?"]
-
-        answers = []  # this will be an empty list of answers because it will be filled with the user's responses
-
-        for question in questions:  # this is a for loop that will do the same code below for every question in our questions list
-            # this will get the order of the question in the questions list
-            question_order = questions.index(question)
-            # since the index starts with the number 0, this will add 1 to the index number
-            question_number = question_order + 1
-            question_msg = await ctx.author.send(f"**Q{question_number} : {question}**\nA : Type your answer...")
-
-            def check(msg):  # this is a check that we will use in the `wait_for` to make sure the user responding is the command author and the response is in the bot's DMs
-                return msg.author == ctx.author and msg.guild == None
-
-            # this will wait for a response from the command author
-            answer = await self.bot.wait_for('message', check=check)
-            # this will edit the message of the question to make sure the response is recorded
-            await question_msg.edit(f"**Q : {question}**\nA : {answer.content}")
-            # this will append the answer in the answers list with the answer's number
-            answers.append(f"A{question_number} : {answer.content}")
-
-        # get the channel that the applications should be sent to
-        apps_logs_channel = self.bot.get_channel(918060994855575582)
-
-        embed = nextcord.Embed(color=nextcord.Color.purple()
-                              )  # creating Embed instance
-        embed.set_author(
-            name=f"Staff application by {ctx.author}", icon_url=ctx.author.avatar.url)
-
-        for question in questions:  # this is a for loop that will add a field to the embed for every question
-            question_order = questions.index(question)
-            question_number = question_order + 1
-
-            # now we will need to detect the question's answer
-
-            for answer in answers:  # this will check for the answer in all the answers
-                # as we saved the answer "A{question_number} : {answer.content}"
-                if answer.startswith(f"A{question_number}"):
-                    a = answer
-
-            # this will add a field to the embed
-            embed.add_field(name=question, value=a)
-
-        await apps_logs_channel.send(embed=embed)
-        await ctx.author.send("Your application has been submitted!")
-
-@co
 
 def setup(bot: commands.Bot):
     bot.add_cog(Research(bot))
