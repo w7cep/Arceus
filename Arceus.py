@@ -25,26 +25,21 @@ print(f"Current Working Directory:\n{cwd}\n")
 
 #Working Cogs
 initial_extensions = [
+    'cogs.owner',
     'cogs.blacklist',
     'cogs.botconfig',
     'cogs.botmanager',
-    #'cogs.channel',
+    'cogs.prefix',
+    'cogs.tickets',
+    'cogs.logs',
     'cogs.error',
     'cogs.events',
     'cogs.greetings',
     'cogs.help',
     'cogs.info',
-    'cogs.interactions',
-    #'cogs.moderation',
-    'cogs.owner',
     'cogs.ping',
-    'cogs.prefix',
-    #'extra_cogs.profanity',
-    #'extra_cogs.rtfm',
-    'cogs.tickets',
-    'cogs.logs',
     'cogs.bump',
-    #'extra_cogs.giveaway',
+    'cogs.interactions',
     ]
 
 async def get_prefix(bot, message):
