@@ -21,12 +21,13 @@ class EmbedField:
 class HelpPages(menus.ListPageSource):
     def __init__(self, help_command: "NewHelpCommand", data: List[EmbedField]):
         self._help_command = help_command
-        super().__init__(data, per_page=4)
-        
+        super().__init__(data, per_page=6)
+
     async def format_page(self, menu: menus.Menu, entries: List[EmbedField]) -> nextcord.Embed:
         invoked_with = self._help_command.invoked_with
-        embed = nextcord.Embed(title="__Bot Commands__",
-                               colour=self._help_command.COLOUR)
+        embed = nextcord.Embed(
+            title="__Bot Commands__",
+            colour=self._help_command.COLOUR)
         embed.description = (
             f'Use "<Prefix> help <command>" for more info on a command.\n'
             f'Use "<Prefix> help <category>" for more info on a category.'

@@ -603,7 +603,13 @@ class Moderation(commands.Cog, name="Moderation"):
         if reason == None:
             reason = "no reason"
         # sets permissions for current channel
-        await channel.set_permissions(user, send_messages=False, view_channel=True, read_message_history=True)
+
+        overwrite = nextcord.PermissionOverwrite()
+        overwrite.send_messages = False
+        overwrite.view_channel = True
+        overwrite.read_message_history=False
+
+        await channel.set_permissions(user, overwrite=overwrite)
         await ctx.channel.trigger_typing()
         await channel.send(f"🚫{user.mention} has been blocked in {channel.mention} 🚫 for {reason}")
 
@@ -617,7 +623,7 @@ class Moderation(commands.Cog, name="Moderation"):
             channel = ctx.channel
 
         # sets permissions for current channel
-        await channel.set_permissions(user, send_messages=None, view_channel=None, read_message_history=None)
+        await channel.set_permissions(user, overwrites=None)
         await ctx.channel.trigger_typing()
         await channel.send(f"✅{user.mention} has been unblocked in {channel.mention}✅")
 

@@ -42,8 +42,11 @@ initial_extensions = [
     'cogs.profanity',
     'cogs.rtfm',
     'cogs.tickets',
-    'cogs.app',
+    #'cogs.app',
     'cogs.logs',
+    'cogs.bump',
+    #'cogs.giveaway',
+    #'cogs.research',
     ]
 
 async def get_prefix(bot, message):
@@ -74,7 +77,7 @@ def main():
         owner_id=741118153299591240
     )
     bot.connection_url = secret_file["mongo"]
-    logging.basicConfig(level=logging.INFO)
+    logging.basicConfig(level=logging.WARNING)
     bot.DEFAULTPREFIX = DEFAULTPREFIX
     bot.cwd = cwd
     bot.blacklisted_users = []
@@ -146,14 +149,7 @@ def main():
             traceback.print_tb(error.original.__traceback__)
             print('{0.__class__.__name__}: {0}'.format(error.original), file=sys.stderr)
 
-    @bot.event
-    async def on_message(message):
-        if message.author.bot:
-            return
-        if message.content.startswith == "$trade Kyurem-White":
-            await message.channel.send("Fused pokemon cant be traded.\n\nExample:\nKyurem-White\nKyurem-Black\nNecrozma-Dusk-Mane\nNecrozma-Dawn-Wings\nCalyrex-Ice\nCalyrex-Shadow\n")
 
-        await bot.process_commands(message)
 
     @bot.event
     async def on_message(message):

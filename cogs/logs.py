@@ -36,7 +36,7 @@ class Logs(commands.Cog, name="Logs"):
 
             for name, value, inline in fields:
                 embed.add_field(name=name, value=value, inline=inline)
-
+            embed.set_thumbnail(url=after.avatar.url)
             await log_channel.send(embed=embed)
 
         if before.discriminator != after.discriminator:
@@ -53,13 +53,13 @@ class Logs(commands.Cog, name="Logs"):
 
             for name, value, inline in fields:
                 embed.add_field(name=name, value=value, inline=inline)
-
+            embed.set_thumbnail(url=after.avatar.url)
             await log_channel.send(embed=embed)
 
         if before.avatar.url != after.avatar.url:
             embed = Embed(
                 title="Avatar change",
-                description="New image is below, old to the right.",
+                description=f"{after.name} Changed Profile Pictures.\nNew pfp is below, old pfp to the right.",
                 colour=after.colour,
                 timestamp=datetime.now(),
             )
@@ -86,12 +86,12 @@ class Logs(commands.Cog, name="Logs"):
 
             for name, value, inline in fields:
                 embed.add_field(name=name, value=value, inline=inline)
-
+            embed.set_thumbnail(url=after.avatar.url)
             await log_channel.send(embed=embed)
 
         elif before.roles != after.roles:
             embed = Embed(
-                title="Role updates", colour=after.colour, timestamp=datetime.now()
+                title="Role updates", description=f"{after.name} updated their roles.", colour=after.colour, timestamp=datetime.now()
             )
 
             fields = [
@@ -101,7 +101,6 @@ class Logs(commands.Cog, name="Logs"):
 
             for name, value, inline in fields:
                 embed.add_field(name=name, value=value, inline=inline)
-
             await log_channel.send(embed=embed)
 
     @Cog.listener()

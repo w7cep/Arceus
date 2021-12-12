@@ -1,6 +1,6 @@
 import nextcord
 from nextcord import Embed
-from nextcord.ext import commands
+from nextcord.ext import commands, tasks
 import config
 from better_profanity import profanity
 from datetime import datetime
@@ -12,9 +12,9 @@ class Events(commands.Cog, name="Events"):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
 
-        '''self.bot_reminder.start()'''
+        self.bot_reminder.start()
 
-    '''@tasks.loop(hours=4)  # you can even use hours and minutes
+    @tasks.loop(hours=4)  # you can even use hours and minutes
     async def bot_reminder(self):
         print("Sending SysBot reminder message")
         channel = self.bot.get_channel(843271842931933224)
@@ -23,7 +23,7 @@ class Events(commands.Cog, name="Events"):
     @bot_reminder.before_loop
     async def before_bot_reminder(self):
         print('waiting...')
-        await self.bot.wait_until_ready()'''
+        await self.bot.wait_until_ready()
 
     @commands.Cog.listener()
     async def on_member_join(self, member: nextcord.Member):
@@ -65,7 +65,7 @@ class Events(commands.Cog, name="Events"):
             await message.delete()
             await message.channel.send("You can't use that word here.", delete_after=10)
 
-    @commands.Cog.listener()
+    '''@commands.Cog.listener()
     async def on_message(self, message):
         def _check(m):
             return (m.author == message.author
@@ -74,8 +74,9 @@ class Events(commands.Cog, name="Events"):
 
         if message.content == "!d bump":
             await message.channel.send("That was a good bumping!\nI will remind you in 2 hours for another!")
+            await message.channel.send("use `.remindme to get the <@&881596772143759400> role!")
             await asyncio.sleep(7200)
-            await message.channel.send("<@&881596772143759400> I'm ready for another good bumping!")
+            await message.channel.send("<@&881596772143759400> I'm ready for another good bumping!")'''
 #7200 seconds = 2 hours
 
 def setup(bot: commands.Bot):

@@ -27,6 +27,7 @@ class Interactions(commands.Cog, name="Interactions"):
         self.__bot.add_view(ConfirmView())
         self.__bot.add_view(SysBotRuleView())
         self.__bot.add_view(ColorRoleView())
+
         # set flag
         self.__bot.persistent_views_added = True
 

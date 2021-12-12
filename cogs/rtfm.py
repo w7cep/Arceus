@@ -487,7 +487,7 @@ class Rtfm(commands.Cog):
             "python": "https://docs.python.org/3",
             "nextcord": "https://nextcord.readthedocs.io/en/latest",
             "dpy": "https://nextcordpy.readthedocs.io/en/latest",
-            "dpy2": "https://discordpy.readthedocs.io/en/master",
+            "dpy2": "https://nextcordpy.readthedocs.io/en/master",
             "pycord": "https://pycord.readthedocs.io/en/latest",
             "edpy": "https://enhanced-dpy.readthedocs.io/en/latest",
             "disnake": "https://disnake.readthedocs.io/en/latest",

@@ -108,6 +108,7 @@ class Economy(commands.Cog, name="Economy"):
 
 
     @commands.command(aliases=['rb'])
+    @commands.cooldown(1, 1800, commands.BucketType.user)
     async def rob(self, ctx, member : nextcord.Member):
         await open_bank(ctx.author)
         await open_bank(member)
@@ -125,6 +126,8 @@ class Economy(commands.Cog, name="Economy"):
         await update_bank(ctx.author,+1*earning)
         await update_bank(member,-1*earning, 'bank')
         await ctx.send(f'{ctx.author.mention} You robbed {member} and got {earning} coins')
+
+
 
     @commands.command(aliases=['sm'])
     async def send(self, ctx, member : nextcord.Member, amount = None):

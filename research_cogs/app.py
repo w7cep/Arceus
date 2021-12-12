@@ -62,14 +62,34 @@ class ApplyView(nextcord.ui.View):
 
 #----------------------------------------------------------------------------------------------------------------------------------------------------------
 #----------------------------------------------------------------------------------------------------------------------------------------------------------
+class ApplyConfirm(nextcord.ui.View):
+    def __init__(self):
+        super().__init__(timeout=None)
+        self.value = None
+
+    @nextcord.ui.button(
+        label="Accept", style=nextcord.ButtonStyle.green, custom_id="yes"
+    )
+    async def confirm(
+        self, button: nextcord.ui.Button, interaction: nextcord.Interaction
+    ):
+        self.value = True
+        self.stop()
+
+    @nextcord.ui.button(label="Deny", style=nextcord.ButtonStyle.red, custom_id="no")
+    async def cancel(
+        self, button: nextcord.ui.Button, interaction: nextcord.Interaction
+    ):
+        self.value = False
+        self.stop()
 #----------------------------------------------------------------------------------------------------------------------------------------------------------
 
-class ApplyConfirm(ApplyView):
+class ModAdd(ApplyView):
     def __init__(self):
         super().__init__(add_only=True, required_roles=[config.MEMBER_ROLE_ID],)
     VIEW_NAME = "ApplyConfirm"
     @nextcord.ui.button(
-        label="Approve",
+        label="Confirm",
         emoji="✅",
         style=nextcord.ButtonStyle.blurple,
         # set custom id to be the bot name : the class name : the role id
@@ -78,7 +98,7 @@ class ApplyConfirm(ApplyView):
     async def application_button(self, button, interaction):
         await self.handle_click(button, interaction)
 
-    @nextcord.ui.button(label="Deny", emoji="❌", style=nextcord.ButtonStyle.grey , custom_id="no")
+    @nextcord.ui.button(label="Cancel", emoji="❌", style=nextcord.ButtonStyle.grey , custom_id="no")
     async def cancel(
         self, button: nextcord.ui.Button, interaction: nextcord.Interaction
     ):
@@ -98,7 +118,8 @@ class App(commands.Cog, name="App"):
     @commands.command()
     @commands.guild_only()
     async def apply(self, ctx):
-        view = ApplyConfirm()
+        view1 = ApplyConfirm()
+        view2 = ModAdd()
 
         # we will make a list of questions here and you may add as more as you like
         questions = ["Do you have two-factor authentication (2FA) set up on your discord account?", "What continent are you on?", "Please enter today's date in your time zone.", "Please enter the current time in your time zone, doesn't have to be super accurate.", "Please enter your general availability. eg: weekdays 5pm-9pm, some weekends all day. This does not have to be precise and will not be enforced.", "Do you have a modded/CFW/hacked and unbanned switch?", "Have/Do you use the pokemon bots on Greninj's Grotto?", "How familiar with pkhex are you? None,Somewhat,Very", "Is your profile picture on discord fairly safe?", "Are you generally not unreasonably argumentative?", "Do you enjoy helping others when you have time?", "Have you read and understand most of the bot instructions on the server?", "Do you believe you are active on the server?", "Do you have experience as a mod in other Discord servers?", "Please explain why you would want to join the moderation team in as many or as few words as you would like."]
@@ -146,17 +167,17 @@ class App(commands.Cog, name="App"):
             # this will add a field to the embed
             embed.add_field(name=question, value=a, inline=False)
             embed.set_thumbnail(url="https://cdn.discordapp.com/attachments/862327803964817438/907116113970741328/21035.jpg")
-        await apps_logs_channel.send(embed=embed, view=view)
+        await apps_logs_channel.send(embed=embed, view=ApplyConfirm())
         await ctx.author.send("Your application has been submitted!")
 
         await view.wait()
-
+        embed2 = nextcord.Embed(title="Your application has been accepted.\nPress Confirm to become a moderator!")
         if view.value is None:
             await ctx.author.send("Command has been Timed Out, please try again.")
 
         elif view.value:
             await apps_logs_channel.send(f"You approved {ctx.author.mention} to be a moderator!")
-
+            await ctx.author.send(embed=embed2, view=ModAdd())
         else:
             await apps_logs_channel.send(f"You denied **{ctx.author.name}#{ctx.author.discriminator}'s** application to be a moderator!")
         return
