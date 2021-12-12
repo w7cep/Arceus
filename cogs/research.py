@@ -469,7 +469,7 @@ class Research(commands.Cog, name="Research"):
                 if str(reaction.emoji) == '❌':
                     await member.send('Application won\'t be sent')
 #----------------------------------------------------------------------------------------------------------------------------------------------------------
-    @commands.command()
+    '''@commands.command()
     @commands.guild_only()
     @commands.cooldown(5, 30, type=BucketType.user)
     async def suggest(self, ctx, *, description):
@@ -495,8 +495,8 @@ class Research(commands.Cog, name="Research"):
     async def suggest_error(self, ctx, error):
         if isinstance(error, commands.MissingRequiredArgument):
             embed = nextcord.Embed(description='❌ Please make sure to include your suggestion:\n```!suggest <suggestion>```', color=nextcord.Color.dark_red())
-            embed.set_author(name=f"{ctx.author}", icon_url=f"{ctx.author.avatar_url}")
-            await ctx.channel.send(embed=embed)
+            embed.set_author(name=f"{ctx.author}", icon_url=f"{ctx.author.avatar.url}")
+            await ctx.channel.send(embed=embed)'''
 #------------------------------------------------------------------------------------------------------------
     @commands.command()
     async def members(self, ctx):

@@ -17,10 +17,8 @@ class BotManager(commands.Cog, name="BotManager"):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
 
-    @commands.command(
-        name="botmanager", description="Gives Bot Manager role to a Member."
-    )
-    @commands.has_permissions(administrator=True)
+    @commands.command(name="botmanager", description="Gives Bot Manager role to a Member.")
+    @commands.is_owner()
     async def botmanager(self, ctx, member: nextcord.Member = None, *, reason=None):
         guild = ctx.guild
         if reason == None:
