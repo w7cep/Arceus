@@ -1,5 +1,7 @@
 import nextcord
 from nextcord.ext import commands
+from nextcord.ext.commands import BucketType, cooldown
+from nextcord.ui import Button, View
 import utils.json_loader as jl
 from utils import checks
 import inspect
@@ -10,6 +12,10 @@ import os
 import random
 import traceback
 import config
+from urllib.parse import quote_plus
+from typing import List
+import requests
+
 
 class Owner(commands.Cog, name="Owner"):
     """Test commands"""
@@ -155,6 +161,34 @@ class Owner(commands.Cog, name="Owner"):
             await ctx.send(":thumbs_up:")
         else:
             await ctx.send("you don't look like ki7zvf#1028")
+
+    @commands.command()
+    @commands.is_owner()
+    async def epikhost(self, ctx):
+        """Links to EpikHost."""
+        panel = Button(label="Panel", url="https://panel.epikhost.xyz/", row=1)
+        arceus = Button(label="Arceus", url="https://panel.epikhost.xyz/server/7705fc62", row=1)
+        arceustest = Button(label="ArceusTest", url="https://panel.epikhost.xyz/server/d8dbe3cd", row=1)
+        vscode = Button(label="VS Code", url="https://panel.epikhost.xyz/server/ff9d6478", row=2)
+        mongodb = Button(label="MongoDB", url="https://panel.epikhost.xyz/server/0bbd073c", row=2)
+        mariadb = Button(label="MariaDB", url="https://panel.epikhost.xyz/server/ea6c8093", row=2)
+
+        view = View()
+        view.add_item(panel)
+        view.add_item(arceus)
+        view.add_item(arceustest)
+        view.add_item(vscode)
+        view.add_item(mongodb)
+        view.add_item(mariadb)
+
+        embed = nextcord.Embed(title="EpikHost Links")
+        embed.add_field(name="Panel", value="Link to the Panel")
+        embed.add_field(name="Arceus", value="Link to the Arceus Server")
+        embed.add_field(name="ArceusTest", value="Link to the ArceusTest Server")
+        embed.add_field(name="VS Code", value="Link to the VS Code Server")
+        embed.add_field(name="MongoDB", value="Link to the MongoDB Server")
+        embed.add_field(name="MariaDB", value="Link to the MariaDB Server")
+        await ctx.send(embed=embed, view=view)
 
 def setup(bot: commands.Bot):
     bot.add_cog(Owner(bot))

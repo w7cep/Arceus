@@ -18,7 +18,7 @@ import json
 import random
 import asyncio
 from difflib import get_close_matches
-
+#-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 PREFIX = ">"
 BOT_USER_ID = "909159653315842060"
 ban_msg = [
@@ -42,14 +42,14 @@ ban_msg = [
     "was struck by lightning",
     "discovered the floor was lava",
 ]
-
+#-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 kick_msg = [
     "got booted and got kicked?",
     "got kicked, imagine getting kicked...",
     "got kicked... I ran out of jokes",
 ]
-
+#-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 class BanConfirm(nextcord.ui.View):
     def __init__(self):
@@ -71,7 +71,7 @@ class BanConfirm(nextcord.ui.View):
     ):
         self.value = False
         self.stop()
-
+#-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 class Sinner(commands.Converter):
     async def convert(self, ctx, argument):
         argument = await commands.MemberConverter().convert(ctx, argument)  # gets a member object
@@ -82,7 +82,7 @@ class Sinner(commands.Converter):
         else:
             # tells user that target is a staff member
             raise commands.BadArgument("You cannot punish other staff members")
-
+#-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 class MuteConfirm(nextcord.ui.View):
     def __init__(self):
         super().__init__()
@@ -103,18 +103,18 @@ class MuteConfirm(nextcord.ui.View):
     ):
         self.value = False
         self.stop()
-
+#-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 class Moderation(commands.Cog, name="Moderation"):
     """Moderation commands"""
 
     def __init__(self, bot: commands.Bot):
         self.bot = bot
-
+#-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
     @commands.Cog.listener()
     async def on_message(self, message):
         if str(message.author.id) != str(BOT_USER_ID):
             send = message.channel.send
-
+#-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
     @commands.command(name="ban", description="Bans the member from your server.")
     @commands.has_permissions(ban_members=True)
     async def ban(self, ctx, member: nextcord.Member = None, *, reason=None):
@@ -150,7 +150,7 @@ class Moderation(commands.Cog, name="Moderation"):
         await ctx.send(embed=banEmbed)
         await member.send(f"You got banned in **{guild}** | Reason: **{reason}**")
         await member.ban(reason=reason)
-
+#-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
     @commands.command(description="Unbans a member from your server by ID")
     @commands.has_permissions(ban_members=True)
     async def unban(self, ctx, id: int):
@@ -158,7 +158,7 @@ class Moderation(commands.Cog, name="Moderation"):
         await ctx.guild.unban(user)
         em = nextcord.Embed(title="Unban Success", description="Unbanned user :D")
         await ctx.send(embed=em)
-
+#-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
     @commands.command(name="kick", description="Kicks the member from your server.")
     @commands.has_permissions(kick_members=True)
     async def kick(self, ctx, member: nextcord.Member = None, *, reason=None):
@@ -200,7 +200,7 @@ class Moderation(commands.Cog, name="Moderation"):
         await ctx.send(embed=kickEmbed)
         await member.send(f"You got kicked in **{guild}** | Reason: **{reason}**")
         await member.kick(reason=reason)
-
+#-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
     @commands.command(name="tempban", description="bans a member indefinitely.")
     @commands.has_permissions(manage_messages=True)
     async def tempban(
@@ -255,7 +255,7 @@ class Moderation(commands.Cog, name="Moderation"):
                 await ctx.guild.unban(member)
                 await member.send(f"You have been unbanned from **{guild}**")
             return
-
+#-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
     @commands.command(name="tempmute", description="Mutes a member indefinitely.")
     @commands.has_permissions(manage_messages=True)
     async def tempmute(
@@ -333,7 +333,7 @@ class Moderation(commands.Cog, name="Moderation"):
                 await member.remove_roles(mutedRole)
                 await member.send(f"You have been unmuted from **{guild}**")
             return
-
+#-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
     @commands.command(
         name="mute", description="Mutes a member for a specific amount of time."
     )
@@ -399,7 +399,7 @@ class Moderation(commands.Cog, name="Moderation"):
             f"You have been muted from: **{guild.name}** | Reason: **{reason}**"
         )
         return
-
+#-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
     @commands.command(name="unmute", description="Unmutes a muted member.")
     @commands.has_permissions(manage_messages=True)
     async def unmute(self, ctx, member: nextcord.Member = None, *, reason=None):
@@ -462,7 +462,7 @@ class Moderation(commands.Cog, name="Moderation"):
             f"You have been unmuted from: **{guild.name}** | Reason: **{reason}**"
         )
         return
-
+#-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
     @commands.command(
         name="modmute", description="Mutes a member for a specific amount of time."
     )
@@ -546,11 +546,13 @@ class Moderation(commands.Cog, name="Moderation"):
                 description="Lets pretend like this never happened them :I",
                 )
             await ctx.author.send(embed=banEmbed)
-
+#-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
     @commands.command(description="Modbans the member.")
     @commands.has_permissions(kick_members=True)
-    @commands.cooldown(1, 21600, commands.BucketType.user)
-    async def modban(self, ctx, member: nextcord.Member = None, *, reason=None):
+    async def modban(self, ctx, member, *, reason=None):
+        """bans a member with their id."""
+        member = await self.bot.fetch_user(int(member))
+
         if reason is None:
             reason = f"{ctx.author.name} modbanned {member.name}"
         else:
@@ -571,10 +573,10 @@ class Moderation(commands.Cog, name="Moderation"):
             description="This is a very risky command only to be used in important situations such as, `NSFW or NSFLPosting` or `Raid on the Server`. Only use this command if no admin is online or responding. **If this command is used for the wrong purpose you may risk getting demoted if not banned from the staff team.**",
         )
         view = BanConfirm()
-        await ctx.author.send(embed=em, view=view)
+        await ctx.send(embed=em, view=view)
         await view.wait()
         if view.value is None:
-            await ctx.author.send("Command has been Timed Out, please try again.")
+            await ctx.send("Command has been Timed Out, please try again.")
         elif view.value:
             guild = ctx.guild
             banMsg = random.choice(ban_msg)
@@ -582,16 +584,16 @@ class Moderation(commands.Cog, name="Moderation"):
                 title="Ban Success", description=f"{member.mention} {banMsg}"
             )
             banEmbed.add_field(name="Reason", value=reason)
-            await ctx.author.send(embed=banEmbed)
-            await member.ban(reason=reason)
-            await member.send(f"You got banned in **{guild}** | Reason: **{reason}**")
+            await ctx.send(embed=banEmbed)
+            await ctx.guild.ban(member, reason=reason)
+            #await member.send(f"You got banned in **{guild}** | Reason: **{reason}**")
         else:
             banEmbed = nextcord.Embed(
                 title="Ban Cancelled",
                 description="Lets pretend like this never happened them :I",
             )
-            await ctx.author.send(embed=banEmbed)
-
+            await ctx.send(embed=banEmbed)
+#-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
     @commands.command(name="block")
     @commands.has_permissions(manage_messages=True)
     async def _block(self, ctx, *, user: Sinner = None, channel: nextcord.TextChannel = None, reason=None):
@@ -612,7 +614,7 @@ class Moderation(commands.Cog, name="Moderation"):
         await channel.set_permissions(user, overwrite=overwrite)
         await ctx.channel.trigger_typing()
         await channel.send(f"🚫{user.mention} has been blocked in {channel.mention} 🚫 for {reason}")
-
+#-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
     @commands.command(name="unblock")
     @commands.has_permissions(manage_messages=True)
     async def _unblock(self, ctx, user: Sinner = None, channel: nextcord.TextChannel = None, reason=None):
@@ -626,6 +628,6 @@ class Moderation(commands.Cog, name="Moderation"):
         await channel.set_permissions(user, overwrites=None)
         await ctx.channel.trigger_typing()
         await channel.send(f"✅{user.mention} has been unblocked in {channel.mention}✅")
-
+#-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 def setup(bot: commands.Bot):
     bot.add_cog(Moderation(bot))

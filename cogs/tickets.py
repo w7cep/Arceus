@@ -4,12 +4,16 @@ from nextcord.ext.commands import has_permissions, MissingPermissions
 import json
 import asyncio
 
+
+#----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 class Tickets(commands.Cog, name="Tickets"):
     """Test commands"""
 
     def __init__(self, bot: commands.Bot):
         self.bot = bot
 
+
+#----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
     @commands.command(name="tickethelp")
     async def tickethelp(self, ctx):
         with open("data.json") as f:
@@ -47,10 +51,11 @@ class Tickets(commands.Cog, name="Tickets"):
             em.set_footer(text="Arceus Development")
 
             await ctx.send(embed=em)
-
+#----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
     @commands.command()
     async def ticket(self, ctx, *, args = None):
-
+        guild = ctx.guild
+        category = nextcord.utils.get(guild.categories, name="TICKETS")
         await self.bot.wait_until_ready()
 
         if args == None:
@@ -65,20 +70,22 @@ class Tickets(commands.Cog, name="Tickets"):
         ticket_number = int(data["ticket-counter"])
         ticket_number += 1
 
-        ticket_channel = await ctx.guild.create_text_channel(f"{ctx.author.name}-00{ticket_number}")
+        ticket_channel = await ctx.guild.create_text_channel(f"{ctx.author.name}-00{ticket_number}", category=category)
         await ticket_channel.set_permissions(ctx.guild.get_role(ctx.guild.id), send_messages=False, read_messages=False)
         await ticket_channel.set_permissions(ctx.author, view_channel=True, send_messages=True, read_messages=True, add_reactions=True, embed_links=True, attach_files=True, read_message_history=True, external_emojis=True)
 
         for role_id in data["valid-roles"]:
-            role = ctx.guild.get_role(role_id)
-
-            await ticket_channel.set_permissions(ctx.author, view_channel=True, send_messages=True, read_messages=True, add_reactions=True, embed_links=True, attach_files=True, read_message_history=True, external_emojis=True)
+            role = ctx.guild.get_role(role_id)\
 
             await ticket_channel.set_permissions(role, send_messages=True, read_messages=True, add_reactions=True, embed_links=True, attach_files=True, read_message_history=True, external_emojis=True)
 
-            em = nextcord.Embed(title="New ticket from {}#{}".format(ctx.author.name, ctx.author.discriminator), description= "{}".format(message_content), color=0x00a8ff)
+        await ticket_channel.set_permissions(ctx.author, view_channel=True, send_messages=True, read_messages=True, add_reactions=True, embed_links=True, attach_files=True, read_message_history=True, external_emojis=True)
 
-            await ticket_channel.send(embed=em)
+
+
+        em = nextcord.Embed(title="New ticket from {}#{}".format(ctx.author.name, ctx.author.discriminator), description= "{}".format(message_content), color=0x00a8ff)
+
+        await ticket_channel.send(embed=em)
 
         pinged_msg_content = ""
         non_mentionable_roles = []
@@ -111,8 +118,9 @@ class Tickets(commands.Cog, name="Tickets"):
         created_em = nextcord.Embed(title="Arceus Tickets", description="Your ticket has been created at {}".format(ticket_channel.mention), color=0x00a8ff)
 
         await ctx.send(embed=created_em)
-
+#----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
     @commands.command()
+    @commands.has_permissions(administrator=True)
     async def close(self, ctx):
         with open('data.json') as f:
             data = json.load(f)
@@ -141,10 +149,9 @@ class Tickets(commands.Cog, name="Tickets"):
             except asyncio.TimeoutError:
                 em = nextcord.Embed(title="Arceus Tickets", description="You have run out of time to close this ticket. Please run the command again.", color=0x00a8ff)
                 await ctx.send(embed=em)
-
-
-
+#----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
     @commands.command()
+    @commands.has_permissions(administrator=True)
     async def addaccess(self, ctx, role_id=None):
 
         with open('data.json') as f:
@@ -190,8 +197,9 @@ class Tickets(commands.Cog, name="Tickets"):
         else:
             em = nextcord.Embed(title="Arceus Tickets", description="Sorry, you don't have permission to run that command.", color=0x00a8ff)
             await ctx.send(embed=em)
-
+#----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
     @commands.command()
+    @commands.has_permissions(administrator=True)
     async def delaccess(self, ctx, role_id=None):
         with open('data.json') as f:
             data = json.load(f)
@@ -242,8 +250,9 @@ class Tickets(commands.Cog, name="Tickets"):
         else:
             em = nextcord.Embed(title="Arceus Tickets", description="Sorry, you don't have permission to run that command.", color=0x00a8ff)
             await ctx.send(embed=em)
-
+#----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
     @commands.command()
+    @commands.has_permissions(administrator=True)
     async def addpingedrole(self, ctx, role_id=None):
 
         with open('data.json') as f:
@@ -290,8 +299,9 @@ class Tickets(commands.Cog, name="Tickets"):
         else:
             em = nextcord.Embed(title="Arceus Tickets", description="Sorry, you don't have permission to run that command.", color=0x00a8ff)
             await ctx.send(embed=em)
-
+#----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
     @commands.command()
+    @commands.has_permissions(administrator=True)
     async def delpingedrole(self, ctx, role_id=None):
 
         with open('data.json') as f:
@@ -341,9 +351,9 @@ class Tickets(commands.Cog, name="Tickets"):
         else:
             em = nextcord.Embed(title="Arceus Tickets", description="Sorry, you don't have permission to run that command.", color=0x00a8ff)
             await ctx.send(embed=em)
-
-
+#----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
     @commands.command()
+    @commands.has_permissions(administrator=True)
     @has_permissions(administrator=True)
     async def addadminrole(self, ctx, role_id=None):
 
@@ -365,8 +375,9 @@ class Tickets(commands.Cog, name="Tickets"):
         except:
             em = nextcord.Embed(title="Arceus Tickets", description="That isn't a valid role ID. Please try again with a valid role ID.")
             await ctx.send(embed=em)
-
+#----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
     @commands.command()
+    @commands.has_permissions(administrator=True)
     @has_permissions(administrator=True)
     async def deladminrole(self, ctx, role_id=None):
         try:
@@ -399,7 +410,7 @@ class Tickets(commands.Cog, name="Tickets"):
         except:
             em = nextcord.Embed(title="Arceus Tickets", description="That isn't a valid role ID. Please try again with a valid role ID.")
             await ctx.send(embed=em)
-
+#----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 def setup(bot: commands.Bot):
     bot.add_cog(Tickets(bot))
 8

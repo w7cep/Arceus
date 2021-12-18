@@ -33,8 +33,10 @@ class Bump(commands.Cog, name="Bump"):
                     and (datetime.now()-m.created_at).seconds < 60)
 
         if message.content == "!d bump":
-            await message.channel.send("That was a good bumping!\nI will remind you in 2 hours for another!")
-            await message.channel.send("use `.remindme` to get the <@&881596772143759400> role!")
+            bump = nextcord.Embed(
+                title=f"Thank you for the bump {message.author}",
+                description="That was a good bumping!\nI will remind you in 2 hours for another!\nuse `.remindme` to get the <@&881596772143759400> role!")
+            await message.channel.send(embed=bump)
             await asyncio.sleep(7200)
             await message.channel.send("<@&881596772143759400> I'm ready for another good bumping!")
         #7200 seconds = 2 hours

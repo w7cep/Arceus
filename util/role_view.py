@@ -18,9 +18,7 @@ class RoleView(nextcord.ui.View):
         user_roles_ids = [role.id for role in user.roles]
         return all(role_id in user_roles_ids for role_id in self.__required_roles)
 
-    async def handle_click(
-        self, button: nextcord.ui.Button, interaction: nextcord.Interaction
-    ):
+    async def handle_click(self, button: nextcord.ui.Button, interaction: nextcord.Interaction):
         # get role from the button's role id
         role = interaction.guild.get_role(int(button.custom_id.split(":")[-1]))
         assert isinstance(role, nextcord.Role)
