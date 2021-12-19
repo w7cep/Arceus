@@ -41,7 +41,6 @@ initial_extensions = [
     'cogs.bump',
     'cogs.interactions',
     'cogs.fun',
-    'cogs.tickets'
     ]
 
 async def get_prefix(bot, message):
